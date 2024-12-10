@@ -6,13 +6,17 @@ import vueDevTools from 'vite-plugin-vue-devtools'
 
 // https://vite.dev/config/
 export default defineConfig({
-  plugins: [
-    vue(),
-    vueDevTools(),
-  ],
+  plugins: [vue(), vueDevTools()],
   resolve: {
     alias: {
-      '@': fileURLToPath(new URL('./src', import.meta.url))
+      '@': fileURLToPath(new URL('./src', import.meta.url)),
+    },
+  },
+  server: {
+    host: '0.0.0.0', // Ensure Vite binds to all interfaces
+    port: 80, // Match the port with Docker
+    watch: {
+      usePolling: true, // Helps with file watching in Docker
     },
   },
 })
