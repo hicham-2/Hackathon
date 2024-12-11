@@ -20,18 +20,23 @@ export class CourseService {
     return course;
   }
 
+  async findCourseById(id) {
+    const course = await this.model.findByPk(id); 
+    return course;
+  }
+
   async findAllCourses() {
     const courses = await this.model.findAll();
     return courses;
   }
 
-  async updateCourseDuration(courseId, duration) {
-    const course = await this.model.update(
-      { duration: duration },
-      { where: { id: courseId } }
-    );
+  async updateCourse(courseId, updatedFields) {
+    const result = await this.model.update(updatedFields, {
+      where: { id: courseId },
+      returning: true,
+    });
 
-    return course;
+    return result[1][0]; 
   }
 
   async deleteCourse(courseId) {
