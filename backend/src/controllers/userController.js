@@ -3,7 +3,7 @@ import SHA256 from "crypto-js/sha256.js";
 import { Router } from "express";
 import jwt from "jsonwebtoken"; // Import du module jsonwebtoken
 import uid2 from "uid2";
-import { SequelizeService } from "../services/sequelizeService.js";
+import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 
 export class UserController {
   async createUser(req, res) {
