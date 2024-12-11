@@ -70,9 +70,7 @@ export class UserController {
   buildRouter() {
     const router = Router();
 
-    router.get("/", this.getAllUsers.bind(this));
     router.post("/login", this.login.bind(this));
-    router.get("/:id", this.getUserById.bind(this));
 
     return router;
   }
