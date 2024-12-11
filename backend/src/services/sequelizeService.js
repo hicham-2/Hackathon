@@ -5,16 +5,19 @@ export class SequelizeService {
   constructor(sequelize) {
     this.sequelize = sequelize;
     this.userService = new UserService(this);
-    this.synchronize();
   }
 
+  async synchronize() {
+    await this.sequelize.sync({ force: true });
+  }
+  
   static async get() {
     if (this.instance !== undefined) {
       return this.instance;
     }
     const connection = await this.openConnection();
     this.instance = new SequelizeService(connection);
-
+    this.instance.synchronize();
     return this.instance;
   }
 
@@ -27,7 +30,4 @@ export class SequelizeService {
     }
   }
 
-  static async synchronize() {
-    await this.sequelize.sync({ force: true });
-  }
 }

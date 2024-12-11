@@ -32,9 +32,11 @@ export class UserController {
   }
 
   async login(req, res) {
-    res.status(200).json({ message: "login" });
+    const sequelizeService = await SequelizeService.get();
     try {
-    //  const userFound = await User.findOne({ username: req?.body?.email });
+      const userFound = await sequelizeService.userService.findOne({
+        username: req?.body?.email,
+      });
 
       if (userFound) {
         const generatedHash = SHA256(

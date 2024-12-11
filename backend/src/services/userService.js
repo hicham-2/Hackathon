@@ -4,7 +4,7 @@ export class UserService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-    thiis.model = this.sequelizeService.define("User", userModel);
+    this.model = this.sequelizeService.define("User", userModel);
   }
 
   async createUser(user) {
@@ -19,5 +19,14 @@ export class UserService {
     });
 
     return user;
+  }
+
+
+  async findOne(email) {
+    const user = await this.model.findOne({
+      email: email,
+    });
+
+    return user;    
   }
 }
