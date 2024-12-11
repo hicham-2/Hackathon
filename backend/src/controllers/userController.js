@@ -1,8 +1,8 @@
 import { Router } from "express";
 import { SequelizeService } from "../services/sequelizeService.js";
 import uid2 from "uid2";
-import SHA256 from "crypto-js/sha256";
-import base64 from "crypto-js/enc-base64";
+import SHA256 from "crypto-js/sha256.js";
+import base64 from "crypto-js/enc-base64.js";
 export class UserController {
   async createUser(req, res) {
     const { role, email, password } = req.body;
@@ -14,7 +14,7 @@ export class UserController {
     try {
       if (email && password) {
         const userFoundByEmail =
-          await sequelizeService.userService.createUser.findOne({
+          await sequelizeService.userService.findOne({
             email: email,
           });
 
