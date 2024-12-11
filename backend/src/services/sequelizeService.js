@@ -1,5 +1,5 @@
 import { Sequelize } from "sequelize";
-import { UserService } from "./userService";
+import { UserService } from "./userService.js";
 
 export class SequelizeService {
   constructor(sequelize) {

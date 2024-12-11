@@ -1,12 +1,10 @@
-import userModel from "../models/userModel";
-import { SequelizeService } from "./sequelizeService";
+import userModel from "../models/userModel.js";
 
 export class UserService {
   constructor(sequelizeService) {
-    this.sequelizeService = SequelizeService;
-    const sequelizeService = this.sequelizeService.sequelize;
+    this.sequelizeService = sequelizeService.sequelize;
 
-    thiis.model = sequelizeService.define("User", userModel);
+    thiis.model = this.sequelizeService.define("User", userModel);
   }
 
   async createUser(user) {

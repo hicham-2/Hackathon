@@ -1,6 +1,6 @@
 import { DataTypes } from "sequelize";
 
-export default userModel = {
+const userModel = {
   firstName: {
     type: DataTypes.STRING,
     allowNull: false,
@@ -9,3 +9,5 @@ export default userModel = {
     type: DataTypes.STRING,
   },
 };
+
+export default userModel;
