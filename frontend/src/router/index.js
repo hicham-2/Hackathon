@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import HomeView from '../views/HomeView.vue'
 import IntervenantView from '../views/IntervenantView.vue'
 import GlobalCalendarView from '../views/GlobalCalendarView.vue'
+import TestView from '@/views/testView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -25,6 +26,11 @@ const router = createRouter({
       path: '/global-calendar',
       name: 'global-calendar',
       component: GlobalCalendarView
+    },
+    {
+      path: '/test',
+      name: 'test',
+      component: TestView
     }
   ]
 })

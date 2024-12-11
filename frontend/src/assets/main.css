@@ -1,35 +1,53 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
+/* Styles globaux */
+body, html {
+  margin: 0;
+  padding: 0;
+  width: 100%;
+  height: 100%;
+  overflow-x: hidden; /* Empêche les débordements horizontaux */
+  font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif;
+}
 
 #app {
-  max-width: 100%;
-  margin: 0 auto;
-  padding: 2rem;
-  font-weight: normal;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* Pour une disposition verticale */
+  justify-content: center; /* Centre verticalement */
+  align-items: center; /* Centre horizontalement */
+  background-color: var(--color-background);
 }
 
-a,
-.green {
-  text-decoration: none;
-  transition: 0.4s;
-  @apply text-teal-600 hover:bg-teal-100 px-1;
-}
-
-@media (min-width: 1024px) {
-  body {
-    @apply flex place-items-center;
-  }
-  #app {
-    @apply grid grid-cols-2 px-8;
-  }
-}
-
+/* Conteneur du calendrier */
 .calendar-container {
-  @apply bg-gray-100 p-8 rounded-lg shadow-lg;
+  width: 100%;
+  height: 100%;
+  display: flex;
+  flex-direction: column; /* Empile les éléments verticalement */
+  justify-content: center;
+  align-items: center;
+  background-color: var(--color-background-soft);
+  padding: 1rem; /* Ajoute un espace autour du calendrier */
 }
 
+/* Styles pour FullCalendar */
 .calendar-container .FullCalendar {
-  @apply bg-white rounded-lg shadow-md;
-  height: 90vh;
+  width: 100%;
+  height: 100%; /* Utilise toute la hauteur disponible */
+  max-width: 1200px; /* Limite la largeur sur des écrans très grands */
+  background-color: var(--vt-c-white);
+  border-radius: 8px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+}
+
+/* Media Queries */
+@media (max-width: 768px) {
+  .calendar-container {
+    padding: 0.5rem; /* Réduit l'espace autour du calendrier */
+  }
+
+  .calendar-container .FullCalendar {
+    max-width: 100%; /* Permet au calendrier de s'adapter à la largeur de l'écran */
+    height: 90vh; /* Ajuste la hauteur pour les petits écrans */
+  }
 }
