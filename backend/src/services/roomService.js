@@ -4,7 +4,7 @@ export class RoomService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-    this.model = this.sequelizeService.define("Room", roomModel);
+    this.model = this.sequelizeService.define("Rooms", roomModel);
   }
 
   async createRoom(room) {

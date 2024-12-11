@@ -1,15 +1,11 @@
 import { DataTypes } from "sequelize";
 
 const unavailabilityModel = {
-  id: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-  },
   professor_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Professor", 
+      model: "Professors", 
       key: "id", 
     },
     onUpdate: "CASCADE",

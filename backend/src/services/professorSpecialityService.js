@@ -1,11 +1,11 @@
-import professorSpecialityModel from "../models/professorspecialityModel.js"; // Importer le modèle de la table de jonction
+import professorSpecialityModel from "../models/professorSpecialityModel.js"; // Importer le modèle de la table de jonction
 
 export class ProfessorSpecialityService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
     // Définir le modèle ProfessorSpeciality dans Sequelize
-    this.model = this.sequelizeService.define("ProfessorSpeciality", professorSpecialityModel);
+    this.model = this.sequelizeService.define("ProfessorSpeciality", professorSpecialityModel,  { tableName: "ProfessorSpeciality" });
   }
 
   async createProfessorSpeciality(professorId, specialityId) {
