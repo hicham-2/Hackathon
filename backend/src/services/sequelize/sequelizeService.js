@@ -1,9 +1,9 @@
 import { Sequelize } from "sequelize";
-import { UserService } from "./userService.js";
-import { RoomService } from "./roomService.js";
-import { CourseService } from "./courseService.js";
-import { SlotService } from "./slotService.js";
-import { NotificationService } from "./notificationService.js";
+import { UserService } from "../userService.js";
+import { RoomService } from "../roomService.js";
+import { CourseService } from "../courseService.js";
+import { SlotService } from "../slotService.js";
+import { NotificationService } from "../notificationService.js";
 
 export class SequelizeService {
   constructor(sequelize) {
