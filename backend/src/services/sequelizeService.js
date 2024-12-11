@@ -3,17 +3,30 @@ import { UserService } from "./userService.js";
 import { RoomService } from "./roomService.js";
 import { CourseService } from "./courseService.js";
 import { SlotService } from "./slotService.js";
+import { NotificationService } from "./notificationService.js";
 
 export class SequelizeService {
   constructor(sequelize) {
     this.sequelize = sequelize;
     this.userService = new UserService(this);
+    this.notificationService = new NotificationService(this);
     this.roomService = new RoomService(this);
     this.courseService = new CourseService(this);
     this.slotService = new SlotService(this);
   }
 
-  setupAssociations() {
+  defineAssociations() {
+    this.notificationService.model.belongsTo(this.userService.model, {
+      foreignKey: "user_id",
+      as: "user",
+      onDelete: "CASCADE",
+    });
+
+    this.userService.model.hasMany(this.notificationService.model, {
+      foreignKey: "user_id",
+      as: "notifications",
+    });
+
     this.roomService.model.hasMany(this.slotService.model, {
       foreignKey: "room_id",
       as: "slots", 
@@ -33,19 +46,19 @@ export class SequelizeService {
       as: "course",
     });
   }
-
   async synchronize() {
     await this.sequelize.sync({ force: true });
   }
-  
+
   static async get() {
     if (this.instance !== undefined) {
       return this.instance;
     }
     const connection = await this.openConnection();
     this.instance = new SequelizeService(connection);
-    this.instance.setupAssociations();
+    this.instance.defineAssociations();
     this.instance.synchronize();
+
     return this.instance;
   }
 
@@ -57,5 +70,4 @@ export class SequelizeService {
       throw error;
     }
   }
-
 }

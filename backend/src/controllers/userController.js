@@ -14,7 +14,7 @@ export class UserController {
     try {
       if (email && password) {
         const userFoundByEmail =
-          await sequelizeService.userService.createUser.findOne({
+          await sequelizeService.userService.findOne({
             email: email,
           });
 
