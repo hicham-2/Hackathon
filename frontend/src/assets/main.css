@@ -1,4 +1,6 @@
-@import './base.css';
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
 
 #app {
   max-width: 1280px;
@@ -10,26 +12,24 @@
 a,
 .green {
   text-decoration: none;
-  color: hsla(160, 100%, 37%, 1);
   transition: 0.4s;
-  padding: 3px;
-}
-
-@media (hover: hover) {
-  a:hover {
-    background-color: hsla(160, 100%, 37%, 0.2);
-  }
+  @apply text-teal-600 hover:bg-teal-100 px-1;
 }
 
 @media (min-width: 1024px) {
   body {
-    display: flex;
-    place-items: center;
+    @apply flex place-items-center;
   }
-
   #app {
-    display: grid;
-    grid-template-columns: 1fr 1fr;
-    padding: 0 2rem;
+    @apply grid grid-cols-2 px-8;
   }
+}
+
+.calendar-container {
+  @apply bg-gray-100 p-8 rounded-lg shadow-lg;
+}
+
+.calendar-container .FullCalendar {
+  @apply bg-white rounded-lg shadow-md;
+  height: 90vh;
 }

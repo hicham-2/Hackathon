@@ -14,16 +14,16 @@ services:
       - ./backend/nodemon.json:/app/nodemon.json
     environment:
       - BDD_ENDPOINT=${BDD_ENDPOINT:-postgresql://root:Sklort@123@localhost:5432/hackathon}
-      - SERVER_PORT=${SERVER_PORT:-3000}
+      - SERVER_PORT=${SERVER_PORT:-3010}
       - CHOKIDAR_USEPOLLING=true
     ports:
-      - "8080:${SERVER_PORT:-3000}"
+      - "8082:${SERVER_PORT:-3010}"
   db:
     image: postgres
-    container_name: db
+    container_name: dbb
     restart: always
     ports:
-      - "5432:5432"
+      - "5431:5431"
     environment:
       POSTGRES_USER: root
       POSTGRES_PASSWORD: Sklort@123
@@ -31,7 +31,7 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   frontend:
-    container_name: frontend
+    container_name: frontendd
     build:
       context: ./frontend
       target: dev
@@ -41,7 +41,7 @@ services:
       - ./frontend:/app
       - /app/node_modules
     ports:
-      - "3000:80"
+      - "3020:82"
     environment:
       - CHOKIDAR_USEPOLLING=true
 

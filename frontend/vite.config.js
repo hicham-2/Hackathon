@@ -14,7 +14,7 @@ export default defineConfig({
   },
   server: {
     host: '0.0.0.0', // Ensure Vite binds to all interfaces
-    port: 80, // Match the port with Docker
+    port: 82, // Match the port with Docker
     watch: {
       usePolling: true, // Helps with file watching in Docker
     },

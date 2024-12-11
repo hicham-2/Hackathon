@@ -28,6 +28,6 @@ FROM nginx:latest AS prod
 
 COPY --from=prod-builder /app/dist /usr/share/nginx/html
 
-EXPOSE 80
+EXPOSE 82
 
 CMD ["nginx", "-g", "daemon off;"]
