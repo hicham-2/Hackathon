@@ -90,7 +90,7 @@ const login = async () => {
 
   try {
     // Appel au backend pour vérifier les informations d'identification
-    const response = await fetch('/api/login', {
+    const response = await fetch('http://localhost:8080/user/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -100,18 +100,24 @@ const login = async () => {
 
     // Vérification de la réponse du backend
     if (!response.ok) {
-      const data = await response.json();
+      const data = await response.json(); // Lire le corps de la réponse une seule fois
       if (data.error === 'Invalid email or password') {
         if (data.field === 'email') emailError.value = 'Email invalide';
         else if (data.field === 'password') passwordError.value = 'Mot de passe incorrect';
         return;
       }
+      // Gérez d'autres erreurs possibles ici
+      console.error('Erreur de connexion:', data);
+      return;
     }
 
-    const data = await response.json();
+    // Si la réponse est ok, on traite les données
+    const data = await response.json(); // Lire une seule fois le corps de la réponse
+
     // Sauvegarder l'utilisateur et le token, puis rediriger
     localStorage.setItem('user', JSON.stringify(data.user));
     localStorage.setItem('token', data.token);
+    localStorage.setItem('role', data.role); 
 
     await router.push('/dashboard'); // Redirection vers le tableau de bord
 
@@ -119,4 +125,5 @@ const login = async () => {
     console.error('Erreur de connexion:', error);
   }
 };
+
 </script>

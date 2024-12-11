@@ -1,8 +1,10 @@
-import { Router } from "express";
-import { SequelizeService } from "../services/sequelizeService.js";
-import uid2 from "uid2";
-import SHA256 from "crypto-js/sha256.js";
 import base64 from "crypto-js/enc-base64.js";
+import SHA256 from "crypto-js/sha256.js";
+import { Router } from "express";
+import jwt from "jsonwebtoken"; // Import du module jsonwebtoken
+import uid2 from "uid2";
+import { SequelizeService } from "../services/sequelizeService.js";
+
 export class UserController {
   async createUser(req, res) {
     const { role, email, password } = req.body;
@@ -30,7 +32,7 @@ export class UserController {
           res.status(201).json(user);
         }
       } else {
-        res.status(400).json({ message: "Données manquante" });
+        res.status(400).json({ message: "Données manquantes" });
       }
     } catch (error) {
       console.error(error);
@@ -42,7 +44,7 @@ export class UserController {
     const sequelizeService = await SequelizeService.get();
     try {
       const userFound = await sequelizeService.userService.findOne({
-        username: req?.body?.email,
+        email: req?.body?.email, // Correction : "email" au lieu de "username"
       });
 
       if (userFound) {
@@ -54,10 +56,23 @@ export class UserController {
           generatedHash === userFound.hash ||
           req.body?.token === userFound.token
         ) {
+          // Génération du token JWT
+          const token = jwt.sign(
+            {
+              name: `${userFound.firstname} ${userFound.lastname}`,
+              role: userFound.role, // Inclure le rôle dans le token
+              id: userFound.id.toString(),
+            },
+            process.env.JWT_SECRET, // Clé secrète (à définir dans vos variables d'environnement)
+            { expiresIn: "30d" }
+          );
+
+          // Réponse avec le token et les détails de l'utilisateur
           res.status(200).json({
-            _id: userFound._id,
+            _id: userFound.id,
             email: userFound.email,
-            token: userFound.token,
+            role: userFound.role,
+            token: token, // Inclure le token généré
           });
         } else {
           res
@@ -72,7 +87,7 @@ export class UserController {
     } catch (error) {
       res
         .status(400)
-        .json({ message: "error lors de la connexion veuillez réessayer" });
+        .json({ message: "Erreur lors de la connexion, veuillez réessayer" });
     }
   }
 
