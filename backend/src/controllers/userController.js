@@ -1,30 +1,37 @@
 import { Router } from "express";
 import { SequelizeService } from "../services/sequelizeService.js";
+import uid2 from "uid2";
+import SHA256 from "crypto-js/sha256";
+import base64 from "crypto-js/enc-base64";
 export class UserController {
   async createUser(req, res) {
-    if (
-      !req.body ||
-      typeof req.body.name !== "string" ||
-      typeof req.body.firstname !== "string" ||
-      typeof req.body.role !== "string" ||
-      typeof req.body.email !== "string" ||
-      typeof req.body.password !== "string"
-    ) {
-      res.status(400).end();
-      return;
-    }
+    const { role, email, password } = req.body;
     const sequelizeService = await SequelizeService.get();
+    const generatedToken = uid2(16);
+    const generatedSalt = uid2(12);
+    const generatedHash = SHA256(password + generatedSalt).toString(base64);
 
     try {
-      const { name, firstname, role, email, password } = req.body;
-      const user = await sequelizeService.userService.createUser({
-        name,
-        firstname,
-        role,
-        email,
-        password,
-      });
-      res.status(201).json(user);
+      if (email && password) {
+        const userFoundByEmail =
+          await sequelizeService.userService.createUser.findOne({
+            email: email,
+          });
+
+        if (!userFoundByEmail) {
+          const user = await sequelizeService.userService.createUser({
+            role,
+            email,
+            token: generatedToken,
+            hash: generatedHash,
+            salt: generatedSalt,
+          });
+
+          res.status(201).json(user);
+        }
+      } else {
+        res.status(400).json({ message: "Données manquante" });
+      }
     } catch (error) {
       console.error(error);
       res.status(500).json({ error: "Error creating user" });
@@ -73,7 +80,7 @@ export class UserController {
     const router = Router();
 
     router.post("/login", this.login.bind(this));
-
+    router.post("/create", this.createUser.bind(this));
     return router;
   }
 }
