@@ -33,6 +33,12 @@
         >
           Valider les disponibilités
         </button>
+        <button 
+          @click="toggleAvailability" 
+          :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']"
+        >
+          {{ isAvailable ? 'Disponible' : 'Occupé' }}
+        </button>
       </div>
    
       <!-- Calendrier -->
@@ -60,6 +66,7 @@
           startDate: '',
           endDate: ''
         },
+        isAvailable: true,
         calendarOptions: {
           plugins: [timeGridPlugin, interactionPlugin],
           initialView: 'timeGridWeek',
@@ -99,18 +106,29 @@
       }
     },
     methods: {
+      toggleAvailability() {
+        this.isAvailable = !this.isAvailable;
+      },
       handleDateSelect(selectInfo) {
-        const title = 'Disponible'
+        const title = this.isAvailable ? 'Disponible' : 'Occupé';
         const calendarApi = selectInfo.view.calendar
         calendarApi.addEvent({
           title,
           start: selectInfo.start,
           end: selectInfo.end,
-          backgroundColor: 'red'
+          backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733'
         })
+
+        const events = calendarApi.getEvents();
+        const eventData = events.map(event => ({
+          title: event.title,
+          start: event.start,
+          end: event.end,
+        }));
+        console.log('Données actuelles du calendrier :', JSON.stringify(eventData));
       },
       handleEventClick(clickInfo) {
-        if (confirm('Supprimer cette disponibilité ?')) {
+        if (confirm('Supprimer cet événement ?')) {
           clickInfo.event.remove()
         }
       },
@@ -132,10 +150,10 @@
         endDate.setHours(20, 0, 0) // Fin à 20h
    
         calendarApi.addEvent({
-          title: 'Disponible',
+          title: this.isAvailable ? 'Disponible' : 'Occupé',
           start: startDate,
           end: endDate,
-          backgroundColor: 'red'
+          backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733'
         })
    
         this.formData.startDate = ''
@@ -209,4 +227,13 @@
    .ml-2 {
     margin-left: 0.5rem;
    }
+
+   .btn-success {
+      background-color: #4CAF50;
+      color: white;
+    }
+    .btn-danger {
+      background-color: #FF5733;
+      color: white;
+    }
    </style>
