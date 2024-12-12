@@ -1,13 +1,13 @@
 import { Sequelize } from "sequelize";
-import { UserService } from "../userService.js";
-import { RoomService } from "../roomService.js";
-import { CourseService } from "../courseService.js";
-import { SlotService } from "../slotService.js";
-import { NotificationService } from "../notificationService.js";
 import { AvailabilityService } from "../availabilityService.js";
-import { ProfessorSpecialityService } from "../professorSpecialityService.js";
 import { ClasseService } from "../classeService.js";
+import { CourseService } from "../courseService.js";
+import { NotificationService } from "../notificationService.js";
+import { ProfessorSpecialityService } from "../professorSpecialityService.js";
+import { RoomService } from "../roomService.js";
 import { SectorService } from "../sectorService.js";
+import { SlotService } from "../slotService.js";
+import { UserService } from "../userService.js";
 
 export class SequelizeService {
   constructor(sequelize) {
@@ -104,7 +104,7 @@ export class SequelizeService {
 
   async synchronize() {
     // await this.sequelize.sync({ force: true });
-    await this.sequelize.sync({ alter: true });
+     await this.sequelize.sync({ alter: true });
   }
 
   static async get() {
