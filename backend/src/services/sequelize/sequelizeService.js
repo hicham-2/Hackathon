@@ -20,7 +20,7 @@ export class SequelizeService {
     this.slotService = new SlotService(this);
     this.availabilityService = new AvailabilityService(this);
     this.classeService = new ClasseService(this);
-    this.classeService = new SectorService(this);
+    this.sectorService = new SectorService(this);
   }
 
   defineAssociations() {
@@ -37,6 +37,16 @@ export class SequelizeService {
     this.courseService.model.hasMany(this.slotService.model, {
       foreignKey: "course_id",
       as: "slots",
+    });
+
+    this.classeService.model.hasMany(this.slotService.model, {
+      foreignKey: "classe_id",
+      as: "classe",
+    });
+
+    this.sectorService.model.hasMany(this.classeService.model, {
+      foreignKey: "sector_id",
+      as: "sector",
     });
 
     this.userService.model.hasMany(this.availabilityService.model, {
@@ -65,6 +75,17 @@ export class SequelizeService {
       foreignKey: "course_id",
       as: "course",
     });
+
+    this.slotService.model.belongsTo(this.classeService.model, {
+      foreignKey: "classe_id",
+      as: "classe",
+    });
+
+    this.classeService.model.hasMany(this.sectorService.model, {
+      foreignKey: "sector_id",
+      as: "sector",
+    });
+
 
     this.userService.model.belongsToMany(this.courseService.model, {
       through: this.professorSpecialityService.model,
