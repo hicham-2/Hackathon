@@ -59,6 +59,7 @@ export class UserController {
             _id: userFound._id,
             email: userFound.email,
             token: userFound.token,
+            role: userFound.role,
           });
         } else {
           res
