@@ -4,8 +4,7 @@ import { RoomService } from "../roomService.js";
 import { CourseService } from "../courseService.js";
 import { SlotService } from "../slotService.js";
 import { NotificationService } from "../notificationService.js";
-import { ProfessorService } from "../professorService.js";
-import { UnavailabilityService } from "../unavailabilityService.js";
+import { AvailabilityService } from "../availabilityService.js";
 import { ProfessorSpecialityService } from "../professorSpecialityService.js";
 
 export class SequelizeService {
@@ -14,22 +13,16 @@ export class SequelizeService {
     this.userService = new UserService(this);
     this.notificationService = new NotificationService(this);
     this.roomService = new RoomService(this);
-    this.professorService = new ProfessorService(this);
     this.professorSpecialityService = new ProfessorSpecialityService(this);
     this.courseService = new CourseService(this);
     this.slotService = new SlotService(this);
-    this.unavailabilityService = new UnavailabilityService(this);
+    this.availabilityService = new AvailabilityService(this);
   }
 
   defineAssociations() {
     this.userService.model.hasMany(this.notificationService.model, {
       foreignKey: "user_id",
       as: "notifications",
-    });
-
-    this.userService.model.hasOne(this.professorService.model, {
-      foreignKey: "user_id",
-      as: "professeur",
     });
 
     this.roomService.model.hasMany(this.slotService.model, {
@@ -42,9 +35,9 @@ export class SequelizeService {
       as: "slots",
     });
 
-    this.professorService.model.hasMany(this.unavailabilityService.model, {
-      foreignKey: "professor_id",
-      as: "unavailabilities",
+    this.userService.model.hasMany(this.availabilityService.model, {
+      foreignKey: "user_id",
+      as: "availabilities",
       onDelete: "CASCADE",
     });
 
@@ -54,15 +47,14 @@ export class SequelizeService {
       onDelete: "CASCADE",
     });
 
+    this.availabilityService.model.belongsTo(this.userService.model, {
+      foreignKey: "user_id",
+      as: "user",
+    });
+
     this.slotService.model.belongsTo(this.roomService.model, {
       foreignKey: "room_id",
       as: "room",
-    });
-
-    this.professorService.model.belongsTo(this.userService.model, {
-      foreignKey: "user_id",
-      as: "Users",
-      onDelete: "CASCADE",
     });
 
     this.slotService.model.belongsTo(this.courseService.model, {
@@ -70,17 +62,17 @@ export class SequelizeService {
       as: "course",
     });
 
-    this.professorService.model.belongsToMany(this.courseService.model, {
+    this.userService.model.belongsToMany(this.courseService.model, {
       through: this.professorSpecialityService.model,
-      foreignKey: "professor_id", // Column in ProfessorSpeciality referencing Professors
+      foreignKey: "user_id", // Column in ProfessorSpeciality referencing Professors
       otherKey: "course_id", // Column in ProfessorSpeciality referencing Courses
       as: "courses", // Alias for courses associated with a professor
     });
 
-    this.courseService.model.belongsToMany(this.professorService.model, {
+    this.courseService.model.belongsToMany(this.userService.model, {
       through: this.professorSpecialityService.model,
       foreignKey: "course_id", // Column in ProfessorSpeciality referencing Courses
-      otherKey: "professor_id", // Column in ProfessorSpeciality referencing Professors
+      otherKey: "user_id", // Column in ProfessorSpeciality referencing Professors
       as: "professors", // Alias for professors associated with a course
     });
   }

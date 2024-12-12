@@ -4,7 +4,7 @@ export class CourseService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-    this.model = this.sequelizeService.define("Course", courseModel);
+    this.model = this.sequelizeService.define("Courses", courseModel);
   }
 
   async createCourse(course) {

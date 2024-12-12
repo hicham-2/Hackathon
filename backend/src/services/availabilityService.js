@@ -1,12 +1,12 @@
-import unavailabilityModel from "../models/unavailabilityModel.js";
+import availabilityModel from "../models/availabilityModel.js";
 
-export class UnavailabilityService {
+export class AvailabilityService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define(
-      "Unavailability",
-      unavailabilityModel
+      "Availabilities",
+      availabilityModel
     );
   }
 
