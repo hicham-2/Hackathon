@@ -1,5 +1,5 @@
 import { Router } from "express";
-import { SequelizeService } from "../services/sequelizeService.js";
+import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 
 export class CourseController {
   async createCourse(req, res) {
