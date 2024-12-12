@@ -1,5 +1,4 @@
 import { DataTypes } from "sequelize";
-import userModel from "./userModel.js";
 
 const notificationModel = {
   user_id: {

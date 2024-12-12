@@ -16,18 +16,24 @@ export class UserService {
 
   async findUser(email, password) {
     const user = await this.model.findOne({
-      email: email,
-      password: password,
+      where: {
+        email: email,
+        password: password,
+      },
     });
 
     return user;
   }
 
+ 
   async findOne(email) {
     const user = await this.model.findOne({
-      email: email,
+      where: {
+        email: email,
+      },
     });
-
+  
     return user;
   }
+  
 }
