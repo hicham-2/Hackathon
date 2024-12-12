@@ -6,6 +6,8 @@ import { SlotService } from "../slotService.js";
 import { NotificationService } from "../notificationService.js";
 import { AvailabilityService } from "../availabilityService.js";
 import { ProfessorSpecialityService } from "../professorSpecialityService.js";
+import { ClasseService } from "../classeService.js";
+import { SectorService } from "../sectorService.js";
 
 export class SequelizeService {
   constructor(sequelize) {
@@ -17,6 +19,8 @@ export class SequelizeService {
     this.courseService = new CourseService(this);
     this.slotService = new SlotService(this);
     this.availabilityService = new AvailabilityService(this);
+    this.classeService = new ClasseService(this);
+    this.classeService = new SectorService(this);
   }
 
   defineAssociations() {
