@@ -6,7 +6,7 @@ const notificationModel = {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: userModel,
+      model: "Users",
       key: "id",
     },
     onDelete: "CASCADE",

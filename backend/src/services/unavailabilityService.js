@@ -4,10 +4,11 @@ export class UnavailabilityService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-
-    this.model = this.sequelizeService.define("Unavailability", unavailabilityModel);
+    this.model = this.sequelizeService.define(
+      "Unavailability",
+      unavailabilityModel
+    );
   }
-
 
   async createUnavailability(unavailability) {
     const res = await this.model.create(unavailability);

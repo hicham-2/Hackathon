@@ -9,14 +9,6 @@ const courseModel = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
-  roomId: {
-    type: DataTypes.INTEGER,
-    allowNull: false,
-    references: {
-      model: "Rooms",
-      key: "id",
-    },
-  },
 };
 
 export default courseModel;

@@ -16,9 +16,7 @@ export class UserController {
     try {
       if (email && password) {
         const userFoundByEmail =
-          await sequelizeService.userService.findOne({
-            email: email,
-          });
+          await sequelizeService.userService.findOne(req.body.email);
 
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
@@ -42,56 +40,51 @@ export class UserController {
 
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
+  
+    if (!req.body || !req.body.email || !req.body.password) {
+      return res.status(400).json({ message: "Données manquantes" });
+    }
+  
     try {
-      const userFound = await sequelizeService.userService.findOne({
-        email: req?.body?.email, // Correction : "email" au lieu de "username"
-      });
+      const userFound = await sequelizeService.userService.findOne(req.body.email);
 
-      if (userFound) {
-        const generatedHash = SHA256(
-          req.body?.password + userFound.salt
-        ).toString(base64);
-
-        if (
-          generatedHash === userFound.hash ||
-          req.body?.token === userFound.token
-        ) {
-          // Génération du token JWT
-          const token = jwt.sign(
-            {
-              name: `${userFound.firstname} ${userFound.lastname}`,
-              role: userFound.role, // Inclure le rôle dans le token
-              id: userFound.id.toString(),
-            },
-            process.env.JWT_SECRET, // Clé secrète (à définir dans vos variables d'environnement)
-            { expiresIn: "30d" }
-          );
-
-          // Réponse avec le token et les détails de l'utilisateur
-          res.status(200).json({
-            _id: userFound.id,
-            email: userFound.email,
-            role: userFound.role,
-            token: token, // Inclure le token généré
-          });
-        } else {
-          res
-            .status(401)
-            .json({ message: "email et/ou mot de passe incorrect(s)" });
-        }
-      } else {
-        res
-          .status(401)
-          .json({ message: "email et/ou mot de passe incorrect(s)" });
+      if (!userFound) {
+        return res.status(401).json({ message: "email et/ou mot de passe incorrect(s)" });
       }
+      
+      console.log('Salt:', userFound.salt); 
+  
+      const generatedHash = SHA256(req.body.password + userFound.salt).toString(base64);
+  
+      if (generatedHash !== userFound.hash) {
+      
+        return res.status(401).json({ message: "email et/ou mot de passe incorrect(s)" });
+      }
+  
+      const token = jwt.sign(
+        { id: userFound.id, role: userFound.role },
+        process.env.JWT_SECRET,
+        { expiresIn: "30d" }
+      );
+  
+      res.status(200).json({
+        _id: userFound.id,
+        email: userFound.email,
+        token: token,
+        role: userFound.role,
+      });
     } catch (error) {
-      res
-        .status(400)
-        .json({ message: "Erreur lors de la connexion, veuillez réessayer" });
+      console.error("Erreur dans login:", error);
+      console.log('Email:', req.body.email);
+      console.log('Mot de passe:', req.body.password);
+      console.log('Salt:', userFound.salt);
+      console.log('Hash généré:', generatedHash);
+      res.status(400).json({ message: "Erreur lors de la connexion, veuillez réessayer" });
     }
   }
-
-  buildRouter() {
+  
+  
+    buildRouter() {
     const router = Router();
 
     router.post("/login", this.login.bind(this));

@@ -4,10 +4,8 @@ export class ProfessorService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-
-    this.model = this.sequelizeService.define("professor", professorModel);
+    this.model = this.sequelizeService.define("Professors", professorModel);
   }
-
 
   async createProfessor(professor) {
     const res = await this.model.create(professor);
@@ -16,7 +14,7 @@ export class ProfessorService {
 
   async findProfessorById(id) {
     const professor = await this.model.findOne({
-      where: { id: id }
+      where: { id: id },
     });
 
     return professor;
@@ -24,13 +22,12 @@ export class ProfessorService {
 
   async findProfessorByUserId(userId) {
     const professor = await this.model.findOne({
-      where: { user_id: userId }
+      where: { user_id: userId },
     });
 
     return professor;
   }
 
- 
   async findAllProfessors() {
     const professors = await this.model.findAll();
     return professors;

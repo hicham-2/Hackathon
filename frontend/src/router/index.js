@@ -1,4 +1,3 @@
-import TestView from '@/views/testView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
 import GlobalCalendarView from '../views/GlobalCalendarView.vue';
 import IntervenantView from '../views/IntervenantView.vue';
@@ -23,7 +22,7 @@ const routes = [
     path: '/dashboard',
     name: 'Dashboard',
     component: () => import('../views/Dashboard.vue'),
-    meta: { requiresAuth: true  },
+    // meta: { requiresAuth: true ,  roles: ['admin']  },
   },
   {
     path: '/planning',
@@ -53,18 +52,16 @@ const routes = [
   {
     path: '/intervenant',
     name: 'intervenant',
-    component: IntervenantView
+    component: IntervenantView,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
   },
   {
     path: '/global-calendar',
     name: 'global-calendar',
-    component: GlobalCalendarView
+    component: GlobalCalendarView,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
   },
-  {
-    path: '/test',
-    name: 'test',
-    component: TestView
-  }
+ 
 ];
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),

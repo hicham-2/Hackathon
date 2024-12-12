@@ -5,12 +5,12 @@
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Connexion</h2>
         
         <div class="mb-6">
-          <label for="identity" class="block text-gray-700 text-sm font-bold mb-2">
+          <label for="email" class="block text-gray-700 text-sm font-bold mb-2">
             Email
           </label>
           <div class="relative">
             <input
-              id="identity"
+              id="email"
               class="appearance-none border-2 border-gray-200 rounded-lg w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               type="email"
               placeholder="votre@email.com"
@@ -82,45 +82,43 @@ const login = async () => {
   emailError.value = '';
   passwordError.value = '';
 
-  if (!email.value || !password.value) {
-    if (!email.value) emailError.value = 'Email requis';
-    if (!password.value) passwordError.value = 'Mot de passe requis';
-    return;
-  }
+  if (!email.value.trim() || !password.value.trim()) {
+  emailError.value = email.value.trim() ? '' : 'Email requis';
+  passwordError.value = password.value.trim() ? '' : 'Mot de passe requis';
+  return;
+}
+
 
   try {
     // Appel au backend pour vérifier les informations d'identification
-    const response = await fetch('http://localhost:8080/user/login', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-      },
-      body: JSON.stringify({ email: email.value, password: password.value }),
+    const response = await fetch("http://localhost:8080/user/login", {
+  method: "POST",
+  headers: {
+    "Content-Type": "application/json",
+  },
+  body: JSON.stringify({
+    email: email.value, 
+    password: password.value,
+  }),
     });
 
-    // Vérification de la réponse du backend
     if (!response.ok) {
-      const data = await response.json(); // Lire le corps de la réponse une seule fois
+      const data = await response.json();
       if (data.error === 'Invalid email or password') {
         if (data.field === 'email') emailError.value = 'Email invalide';
         else if (data.field === 'password') passwordError.value = 'Mot de passe incorrect';
         return;
       }
-      // Gérez d'autres erreurs possibles ici
       console.error('Erreur de connexion:', data);
       return;
     }
 
-    // Si la réponse est ok, on traite les données
-    const data = await response.json(); // Lire une seule fois le corps de la réponse
-
-    // Sauvegarder l'utilisateur et le token, puis rediriger
+    const data = await response.json();
     localStorage.setItem('user', JSON.stringify(data.user));
     localStorage.setItem('token', data.token);
-    localStorage.setItem('role', data.role); 
+    localStorage.setItem('role', data.role);
 
-    await router.push('/dashboard'); // Redirection vers le tableau de bord
-
+    await router.push('/dashboard');
   } catch (error) {
     console.error('Erreur de connexion:', error);
   }

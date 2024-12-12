@@ -8,8 +8,7 @@ export class RoomController {
 
     try {
       if (name) {
-        const roomFoundByName =
-          await sequelizeService.roomService.findRoomByName(name);
+        const roomFoundByName = await sequelizeService.roomService.findRoomByName(name);
 
         if (!roomFoundByName) {
           const newRoom = await sequelizeService.roomService.createRoom({

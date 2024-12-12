@@ -9,6 +9,14 @@ const slotModel = {
     type: DataTypes.DATE,
     allowNull: false,
   },
+  room_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Rooms",
+      key: "id",
+    },
+  },
 };
 
 export default slotModel;
