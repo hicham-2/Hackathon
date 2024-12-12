@@ -1,6 +1,0 @@
-{
-  "dependencies": {
-    "mailer": "^0.6.7",
-    "node": "^23.4.0"
-  }
-}
