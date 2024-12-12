@@ -8,15 +8,16 @@ import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 export class UserController {
   async createUser(req, res) {
     const { role, email, password } = req.body;
-    const sequelizeService = await SequelizeService.get();
     const generatedToken = uid2(16);
     const generatedSalt = uid2(12);
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
-
+    
     try {
+      const sequelizeService = await SequelizeService.get();
+   
       if (email && password) {
         const userFoundByEmail =
-          await sequelizeService.userService.findOne(req.body.email);
+          await sequelizeService.userService.findOne(email);
 
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
@@ -28,6 +29,8 @@ export class UserController {
           });
 
           res.status(201).json(user);
+        } else {
+          res.status(409).json({ message: "Utilisateur déjà existant" });
         }
       } else {
         res.status(400).json({ message: "Données manquantes" });
@@ -46,7 +49,7 @@ export class UserController {
     }
   
     try {
-      const userFound = await sequelizeService.userService.findOne(req.body.email);
+      const userFound = await sequelizeService.userService.findOne(req?.body?.email);
 
       if (!userFound) {
         return res.status(401).json({ message: "email et/ou mot de passe incorrect(s)" });

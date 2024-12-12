@@ -4,7 +4,7 @@ export class SlotService {
   constructor(sequelizeService) {
     this.sequelizeService = sequelizeService.sequelize;
 
-    this.model = this.sequelizeService.define("Slot", slotModel);
+    this.model = this.sequelizeService.define("Slots", slotModel);
   }
 
   async createSlot(slot) {

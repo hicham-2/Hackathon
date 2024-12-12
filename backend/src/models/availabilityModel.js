@@ -1,11 +1,11 @@
 import { DataTypes } from "sequelize";
 
-const unavailabilityModel = {
-  professor_id: {
+const availabilityModel = {
+  user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Professors", 
+      model: "Users",
       key: "id", 
     },
     onUpdate: "CASCADE",
@@ -19,9 +19,9 @@ const unavailabilityModel = {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  reason: {
-    type: DataTypes.STRING,
-    allowNull: true,
+  is_avaible: {
+    type: DataTypes.BOOLEAN,
+    allowNull: false,
   },
   created_at: {
     type: DataTypes.DATE,
@@ -29,4 +29,4 @@ const unavailabilityModel = {
   },
 };
 
-export default unavailabilityModel;
+export default availabilityModel;
