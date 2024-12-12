@@ -19,7 +19,7 @@ const availabilityModel = {
     type: DataTypes.DATE,
     allowNull: false,
   },
-  is_avaible: {
+  is_available: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
