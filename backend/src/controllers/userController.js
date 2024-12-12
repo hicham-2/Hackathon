@@ -10,14 +10,18 @@ export class UserController {
     const generatedToken = uid2(16);
     const generatedSalt = uid2(12);
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
-    
-    try {
-      const sequelizeService = await SequelizeService.get();
-   
-      if (email && password) {
-        const userFoundByEmail =
-          await sequelizeService.userService.findOne(email);
 
+    try {
+    //  const data = await loadFixtures();
+
+
+      const sequelizeService = await SequelizeService.get();
+
+      if (email && password) {
+        const userFoundByEmail = await sequelizeService.userService.findOne(
+          email
+        );
+        
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
             role,
@@ -43,17 +47,19 @@ export class UserController {
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
     try {
-      const userFound = await sequelizeService.userService.findOne(req?.body?.email);
+      const userFound = await sequelizeService.userService.findOne(
+        req?.body?.email
+      );
 
       if (userFound) {
         const generatedHash = SHA256(
           req.body?.password + userFound.salt
         ).toString(base64);
-
-        if (
-          generatedHash === userFound.hash ||
-          req.body?.token === userFound.token
-        ) {
+        console.log(userFound);
+        
+        console.log(generatedHash === userFound.hash);
+        
+        if (generatedHash === userFound.hash) {
           res.status(200).json({
             _id: userFound._id,
             email: userFound.email,
@@ -63,7 +69,7 @@ export class UserController {
         } else {
           res
             .status(401)
-            .json({ message: "email et/ou mot de passe incorrect(s)" });
+            .json({ message: "email et/ou mot de passe incorrect(s)!" });
         }
       } else {
         res
