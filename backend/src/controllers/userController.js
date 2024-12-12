@@ -7,17 +7,16 @@ import base64 from "crypto-js/enc-base64.js";
 export class UserController {
   async createUser(req, res) {
     const { role, email, password } = req.body;
-    const sequelizeService = await SequelizeService.get();
     const generatedToken = uid2(16);
     const generatedSalt = uid2(12);
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
-
+    
     try {
+      const sequelizeService = await SequelizeService.get();
+   
       if (email && password) {
         const userFoundByEmail =
-          await sequelizeService.userService.findOne({
-            email: email,
-          });
+          await sequelizeService.userService.findOne(email);
 
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
@@ -29,6 +28,8 @@ export class UserController {
           });
 
           res.status(201).json(user);
+        } else {
+          res.status(409).json({ message: "Utilisateur déjà existant" });
         }
       } else {
         res.status(400).json({ message: "Données manquante" });
@@ -42,9 +43,7 @@ export class UserController {
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
     try {
-      const userFound = await sequelizeService.userService.findOne({
-        username: req?.body?.email,
-      });
+      const userFound = await sequelizeService.userService.findOne(req?.body?.email);
 
       if (userFound) {
         const generatedHash = SHA256(

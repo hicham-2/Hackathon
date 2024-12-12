@@ -1,13 +1,11 @@
 import { DataTypes } from "sequelize";
-import professorModel from "./professorModel.js";
-import courseModel from "./courseModel.js";
 
 const professorSpecialityModel = {
-  professor_id: {
+  user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: 'Professor',
+      model: "Users",
       key: "id",
     },
   },
