@@ -18,14 +18,50 @@ const planningRequest = {
         { "id": 10, "name": "Sport", "duration": 1, "priority": "low" }
     ],
     "teachers": [
-        { "id": 1, "name": "Prof. Dupont", "availableSlots": ["09:00-11:00", "13:00-15:00", "16:00-18:00"] },
-        { "id": 2, "name": "Prof. Martin", "availableSlots": ["10:00-12:00", "14:00-16:00"] },
-        { "id": 3, "name": "Prof. Lefevre", "availableSlots": ["08:00-10:00", "12:00-14:00"] },
-        { "id": 4, "name": "Prof. Bertrand", "availableSlots": ["09:00-11:00", "15:00-17:00"] },
-        { "id": 5, "name": "Prof. Dubois", "availableSlots": ["07:00-09:00", "11:00-13:00", "14:00-16:00"] },
-        { "id": 6, "name": "Prof. Gauthier", "availableSlots": ["08:00-10:00", "14:00-16:00"] },
-        { "id": 7, "name": "Prof. Muller", "availableSlots": ["10:00-12:00", "14:00-16:00"] },
-        { "id": 8, "name": "Prof. Dufresne", "availableSlots": ["09:00-11:00", "12:00-14:00"] }
+        {
+            "id": 1,
+            "name": "Prof. Dupont",
+            "availability": {
+                "Monday": ["09:00-11:00", "13:00-15:00"],
+                "Tuesday": ["10:00-12:00", "16:00-18:00"],
+                "Wednesday": ["09:00-11:00"],
+                "Thursday": ["13:00-15:00", "16:00-18:00"],
+                "Friday": ["09:00-11:00"]
+            }
+        },
+        {
+            "id": 2,
+            "name": "Prof. Martin",
+            "availability": {
+                "Monday": ["10:00-12:00", "14:00-16:00"],
+                "Tuesday": ["09:00-11:00", "14:00-16:00"],
+                "Wednesday": ["10:00-12:00"],
+                "Thursday": ["14:00-16:00"],
+                "Friday": ["10:00-12:00", "14:00-16:00"]
+            }
+        },
+        {
+            "id": 3,
+            "name": "Prof. Lefevre",
+            "availability": {
+                "Monday": ["08:00-10:00", "12:00-14:00"],
+                "Tuesday": ["10:00-12:00"],
+                "Wednesday": ["08:00-10:00", "12:00-14:00"],
+                "Thursday": ["08:00-10:00"],
+                "Friday": ["12:00-14:00"]
+            }
+        },
+        {
+            "id": 4,
+            "name": "Prof. Bertrand",
+            "availability": {
+                "Monday": ["09:00-11:00", "15:00-17:00"],
+                "Tuesday": ["09:00-11:00"],
+                "Wednesday": ["15:00-17:00"],
+                "Thursday": ["09:00-11:00"],
+                "Friday": ["15:00-17:00"]
+            }
+        }
     ],
     "classes": [
         { "id": 1, "name": "Classe A", "studentsCount": 30 },
@@ -50,6 +86,7 @@ const planningRequest = {
     }
 };
 
+
 const completion = await openai.chat.completions.create({
     model: "gpt-3.5-turbo",
     messages: [
@@ -59,7 +96,7 @@ const completion = await openai.chat.completions.create({
         },
         {
             role: "user",
-            content: `Please generate an optimized schedule in JSON format based on the following data: ${JSON.stringify(planningRequest)}`
+            content: `Please generate an optimized schedule in JSON format based on the following data. Give me the full JSON: ${JSON.stringify(planningRequest)}`
         },
     ],
 });
