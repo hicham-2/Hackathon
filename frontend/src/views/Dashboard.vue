@@ -8,8 +8,9 @@
       <div class="flex-1 bg-gray-100">
        
         <div class="p-6">
-          <h2 class="text-2xl font-bold">Dashboard</h2>
-          <p class="mt-4">Welcome to your Dashboard!</p>
+      
+          <h1 class="text-2xl font-bold">Bienvenue sur le Planning AI</h1>
+          <p class="mt-4">Système de gestion de planning intelligent</p>
         </div>
       </div>
     </div>

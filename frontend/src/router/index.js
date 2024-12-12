@@ -1,4 +1,7 @@
+import TestView from '@/views/testView.vue';
 import { createRouter, createWebHistory } from 'vue-router';
+import GlobalCalendarView from '../views/GlobalCalendarView.vue';
+import IntervenantView from '../views/IntervenantView.vue';
 import Planning from '../views/Planning.vue';
 import Professors from '../views/Professors.vue';
 import Rooms from '../views/Room.vue';
@@ -7,7 +10,7 @@ import Speciality from '../views/Speciality.vue';
 const routes = [
   {
     path: '/',
-    name: 'Home',
+    name: 'HomeView',
     component: () => import('../views/HomeView.vue'),
     // meta: { requiresAuth: true },
   },
@@ -46,6 +49,22 @@ const routes = [
     component: Speciality,
     // meta: { requiresAuth: true ,  roles: ['admin'] },
   },
+
+  {
+    path: '/intervenant',
+    name: 'intervenant',
+    component: IntervenantView
+  },
+  {
+    path: '/global-calendar',
+    name: 'global-calendar',
+    component: GlobalCalendarView
+  },
+  {
+    path: '/test',
+    name: 'test',
+    component: TestView
+  }
 ];
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
