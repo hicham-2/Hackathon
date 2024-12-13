@@ -8,6 +8,8 @@ import { UserController } from "./controllers/userController.js";
 import { canAccessDashboard } from "./middleware/is-admin.js";
 import { authMiddleware } from "./middleware/is-auth.js";
 import { AvailabilityController } from "./controllers/availabilityController.js";
+import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
+
 
 dotenv.config();
 
@@ -17,6 +19,7 @@ const roomController = new RoomController();
 const courseController = new CourseController();
 const emailController = new EmailController();
 const availabilityController = new AvailabilityController();
+const professorSpecialityController = new ProfessorSpecialityController();
 
 // Middleware
 app.use(cors());
@@ -26,6 +29,7 @@ app.use('/user', userController.buildRouter());
 app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
 app.use('/availabilities', availabilityController.buildRouter());
+app.use('/professor-speciality', professorSpecialityController.buildRouter());
 app.get(
   "/admin/dashboard",
   authMiddleware, // Vérifie que le token est valide
