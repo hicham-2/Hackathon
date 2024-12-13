@@ -1,18 +1,23 @@
 import { DataTypes } from "sequelize";
 
 const availabilityModel = {
+  id: {
+    type: DataTypes.INTEGER,
+    autoIncrement: true,
+    primaryKey: true,
+  },
   user_id: {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
       model: "Users",
-      key: "id", 
+      key: "id",
     },
     onUpdate: "CASCADE",
     onDelete: "CASCADE",
   },
   start_datetime: {
-    type: DataTypes.DATE, 
+    type: DataTypes.DATE,
     allowNull: false,
   },
   end_datetime: {
@@ -23,10 +28,7 @@ const availabilityModel = {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },
-  created_at: {
-    type: DataTypes.DATE,
-    defaultValue: DataTypes.NOW,
-  },
+ 
 };
 
 export default availabilityModel;

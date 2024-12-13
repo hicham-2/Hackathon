@@ -33,6 +33,7 @@
     "pg": "^8.13.1",
     "pg-hstore": "^2.3.4",
     "sequelize": "^6.37.5",
+    "sequelize-fixtures": "^1.2.0",
     "sqlite3": "^5.1.7",
     "uid2": "^1.0.0"
   },

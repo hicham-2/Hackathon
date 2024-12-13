@@ -121,7 +121,9 @@ export class SequelizeService {
 
   static async openConnection() {
     try {
-      return new Sequelize(process.env.BDD_ENDPOINT);
+      return new Sequelize(process.env.BDD_ENDPOINT, {
+        logging: true, // Disable logging
+      });
     } catch (error) {
       console.error("Failed to establish a database connection:", error);
       throw error;
