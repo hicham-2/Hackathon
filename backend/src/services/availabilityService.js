@@ -17,7 +17,7 @@ export class AvailabilityService {
 
   async findByProfessor(professorId) {
     const unavailabilities = await this.model.findAll({
-      where: { professor_id: professorId },
+      where: { user_id: professorId },
     });
 
     return unavailabilities;

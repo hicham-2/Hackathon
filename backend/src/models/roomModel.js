@@ -8,7 +8,7 @@ const roomModel = {
   capacity: {
     type: DataTypes.INTEGER,
   },
-  isAvailable: {
+  is_available: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
   },

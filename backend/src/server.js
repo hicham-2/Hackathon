@@ -1,9 +1,12 @@
-import express from "express";
-import dotenv from "dotenv";
 import cors from "cors";
-import { UserController } from "./controllers/userController.js";
-import { RoomController } from "./controllers/roomController.js";
+import dotenv from "dotenv";
+import express from "express";
 import { CourseController } from "./controllers/courseController.js";
+import { RoomController } from "./controllers/roomController.js";
+import { UserController } from "./controllers/userController.js";
+import { canAccessDashboard } from "./middleware/is-admin.js";
+import { authMiddleware } from "./middleware/is-auth.js";
+import { AvailabilityController } from "./controllers/availabilityController.js";
 
 dotenv.config();
 
@@ -11,6 +14,7 @@ const app = express();
 const userController = new UserController();
 const roomController = new RoomController();
 const courseController = new CourseController();
+const availabilityController = new AvailabilityController();
 
 // Middleware
 app.use(cors());
@@ -19,6 +23,15 @@ app.use(express.json());
 app.use('/user', userController.buildRouter());
 app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
+app.use('/availabilities', availabilityController.buildRouter());
+app.get(
+  "/admin/dashboard",
+  authMiddleware, // Vérifie que le token est valide
+  canAccessDashboard, // Vérifie que l'utilisateur est admin
+  (req, res) => {
+    res.status(200).json({ message: "Bienvenue sur le tableau de bord admin !" });
+  }
+);
 
 
 const PORT = process.env.PORT || 3000;
