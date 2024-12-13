@@ -6,17 +6,21 @@
     <ul class="space-y-4">
      
       <li>
-        <router-link to="/planning" class="sidebar-link">Planning</router-link>
+        <router-link to="/planning" class="sidebar-link">Planning général</router-link>
       </li>
       <li>
-        <router-link to="/professors" class="sidebar-link">Professeurs</router-link>
+        <router-link to="/professors" class="sidebar-link">Tous les Professeurs</router-link>
       </li>
       <li>
-        <router-link to="/room" class="sidebar-link">Salles</router-link>
+        <router-link to="/room" class="sidebar-link">Liste des Salles</router-link>
       </li>
       <li>
-        <router-link to="/speciality" class="sidebar-link">Classe</router-link>
+        <router-link to="/course" class="sidebar-link">Tous les Cours</router-link>
       </li>
+      <li>
+        <router-link to="/classe" class="sidebar-link">Liste des Classes</router-link>
+      </li>
+     
     </ul>
   </aside>
 </template>

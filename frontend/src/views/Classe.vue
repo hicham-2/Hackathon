@@ -9,7 +9,7 @@
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Ajouter une Classe</h2>
   
         <!-- Formulaire de détails de la spécialité -->
-        <form @submit.prevent="createSpeciality">
+        <form @submit.prevent="createCourse">
           <div class="mb-6">
             <input
               id="specialityName"

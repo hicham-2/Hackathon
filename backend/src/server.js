@@ -1,9 +1,11 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { AvailabilityController } from "./controllers/availabilityController.js";
 import { CourseController } from "./controllers/courseController.js";
+import { EmailController } from "./controllers/emailController.js";
+import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
 import { RoomController } from "./controllers/roomController.js";
-import { SpecialityController } from "./controllers/specialityController.js";
 import { UserController } from "./controllers/userController.js";
 import { canAccessDashboard } from "./middleware/is-admin.js";
 import { authMiddleware } from "./middleware/is-auth.js";
@@ -14,7 +16,9 @@ const app = express();
 const userController = new UserController();
 const roomController = new RoomController();
 const courseController = new CourseController();
-const specialityController = new SpecialityController();
+const emailController = new EmailController();
+const availabilityController = new AvailabilityController();
+const professorSpecialityController = new ProfessorSpecialityController();
 
 // Middleware
 app.use(cors());
@@ -23,7 +27,8 @@ app.use(express.json());
 app.use('/user', userController.buildRouter());
 app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
-app.use('/speciality', specialityController.buildRouter());
+app.use('/ProfessorSpeciality', professorSpecialityController.buildRouter());
+app.use('/availabilities', availabilityController.buildRouter());
 app.get(
   "/admin/dashboard",
   authMiddleware, // Vérifie que le token est valide
@@ -34,12 +39,18 @@ app.get(
 );
 
 
+
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+
+app.post('/send-email', emailController.sendEmail.bind(emailController));
+
 app.listen(PORT,  () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+

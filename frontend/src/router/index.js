@@ -1,4 +1,7 @@
 import { createRouter, createWebHistory } from 'vue-router';
+import Classe from '../views/Classe.vue';
+import Course from '../views/Course.vue';
+import CourseList from '../views/CourseList.vue';
 import GlobalCalendarView from '../views/GlobalCalendarView.vue';
 import IntervenantView from '../views/IntervenantView.vue';
 import Planning from '../views/Planning.vue';
@@ -6,7 +9,7 @@ import Professor from '../views/Professors.vue';
 import ProfessorsList from '../views/ProfessorsList.vue';
 import Room from '../views/Room.vue';
 import RoomList from '../views/RoomList.vue';
-import Speciality from '../views/Speciality.vue';
+
 
 const routes = [
   {
@@ -57,9 +60,23 @@ const routes = [
     // meta: { requiresAuth: true, roles: ['admin'] }, 
   },
   {
-    path: '/speciality',
-    name: 'Speciality',
-    component: Speciality,
+    path: '/createClasse',
+    name: 'Classe',
+    component: Classe,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+  {
+    path: '/course',
+    name: 'Courses',
+    component: CourseList,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+  {
+    path: '/createCourse',
+    name: 'Course',
+    component: Course,
     // meta: { requiresAuth: true ,  roles: ['admin'] },
   },
 

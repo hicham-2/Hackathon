@@ -46,20 +46,22 @@
             />
           </div>
 
-          <div class="mb-6">
-  <label for="speciality_id" class="block text-gray-700 text-sm font-bold mb-2">Spécialité</label>
-  <select
-    id="speciality_id"
-    v-model="professor.speciality_id"
-    class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-    required
-  >
-    <option disabled value="">Sélectionnez une spécialité</option>
-    <option v-for="speciality in specialities" :key="speciality.id" :value="speciality.id">
-      {{ speciality.name }}
-    </option>
-  </select>
-</div>
+           <!-- Dropdown pour les spécialités -->
+           <div class="mb-6">
+            <label for="speciality_id" class="block text-gray-700 text-sm font-bold mb-2">Spécialités</label>
+            <select
+              id="speciality_id"
+              v-model="professor.speciality_id"
+              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              multiple
+              required
+            >
+              <option disabled value="">Sélectionnez ses spécialités</option>
+              <option v-for="speciality in specialities" :key="speciality.id" :value="speciality.id">
+                {{ speciality.name }}
+              </option>
+            </select>
+          </div>
 
 
           <!-- Dropdown pour les salles -->
@@ -107,22 +109,37 @@ const professor = ref({
   firstname: '',
   email: '',
   role: 'professor',
-  speciality_id: '',
+  speciality_id: [], 
   room_id: '', 
 });
 
 
 const rooms = ref([]);
 
-const specialities = ref([]); 
+const courses = ref([]); 
 
-
-const fetchSpecialities = async () => {
+// Fonction pour récupérer les spécialités des prof
+const fetchProfessorSpecialities = async () => {
   try {
     const response = await fetch('http://localhost:8080/speciality'); 
     if (response.ok) {
       const data = await response.json();
       specialities.value = data;
+    } else {
+      console.error('Erreur lors de la récupération des spécialités');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des spécialités :', error);
+  }
+};
+
+
+const fetchCourses = async () => {
+  try {
+    const response = await fetch('http://localhost:8080/course'); 
+    if (response.ok) {
+      const data = await response.json();
+      courses.value = data;
     } else {
       console.error('Erreur lors de la récupération des spécialités');
     }
@@ -171,6 +188,6 @@ const createProfessor = async () => {
 
 onMounted(() => {
   fetchRooms();
-  fetchSpecialities();
+  fetchCourses();
 });
 </script>
