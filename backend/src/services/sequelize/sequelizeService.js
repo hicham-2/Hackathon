@@ -49,6 +49,16 @@ export class SequelizeService {
       as: "sector",
     });
 
+    this.sectorService.model.hasMany(this.courseService.model, {
+      foreignKey: "sector_id",
+      as: "courses",
+    });
+
+    this.courseService.model.belongsTo(this.sectorService.model, {
+      foreignKey: "sector_id",
+      as: "sector",
+    });
+
     this.userService.model.hasMany(this.availabilityService.model, {
       foreignKey: "user_id",
       as: "availabilities",
@@ -79,13 +89,7 @@ export class SequelizeService {
     this.slotService.model.belongsTo(this.classeService.model, {
       foreignKey: "classe_id",
       as: "classe",
-    });
-
-    this.classeService.model.hasMany(this.sectorService.model, {
-      foreignKey: "sector_id",
-      as: "sector",
-    });
-
+    });    
 
     this.userService.model.belongsToMany(this.courseService.model, {
       through: this.professorSpecialityService.model,
