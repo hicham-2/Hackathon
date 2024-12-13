@@ -35,9 +35,9 @@
         </button>
         <button 
           @click="toggleAvailability" 
-          :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']"
+          :class="['btn', 'mt-2', 'ml-2', is_available ? 'btn-success' : 'btn-danger']"
         >
-          {{ isAvailable ? 'Disponible' : 'Occupé' }}
+          {{ is_available ? 'Disponible' : 'Occupé' }}
         </button>
       </div>
    
@@ -50,10 +50,10 @@
    </template>
    
    <script>
-   import FullCalendar from '@fullcalendar/vue3'
-   import timeGridPlugin from '@fullcalendar/timegrid'
-   import interactionPlugin from '@fullcalendar/interaction'
-   import frLocale from '@fullcalendar/core/locales/fr'
+   import frLocale from '@fullcalendar/core/locales/fr';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import FullCalendar from '@fullcalendar/vue3';
    
    export default {
     name: 'IntervenantView',
@@ -66,7 +66,7 @@
           startDate: '',
           endDate: ''
         },
-        isAvailable: true,
+        is_available: true,
         calendarOptions: {
           plugins: [timeGridPlugin, interactionPlugin],
           initialView: 'timeGridWeek',
@@ -107,16 +107,16 @@
     },
     methods: {
       toggleAvailability() {
-        this.isAvailable = !this.isAvailable;
+        this.is_available = !this.is_available;
       },
       handleDateSelect(selectInfo) {
-        const title = this.isAvailable ? 'Disponible' : 'Occupé';
+        const title = this.is_available ? 'Disponible' : 'Occupé';
         const calendarApi = selectInfo.view.calendar
         calendarApi.addEvent({
           title,
           start: selectInfo.start,
           end: selectInfo.end,
-          backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733'
+          backgroundColor: this.is_available ? '#4CAF50' : '#FF5733'
         })
 
         const events = calendarApi.getEvents();
@@ -150,10 +150,10 @@
         endDate.setHours(20, 0, 0) // Fin à 20h
    
         calendarApi.addEvent({
-          title: this.isAvailable ? 'Disponible' : 'Occupé',
+          title: this.is_available ? 'Disponible' : 'Occupé',
           start: startDate,
           end: endDate,
-          backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733'
+          backgroundColor: this.is_available ? '#4CAF50' : '#FF5733'
         })
    
         this.formData.startDate = ''

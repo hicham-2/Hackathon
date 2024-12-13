@@ -8,30 +8,74 @@
       <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Ajouter un Professeur</h2>
 
-        <!-- Formulaire de détails du professeur -->
-        <form @submit.prevent="updateProfessor">
+        <!-- Formulaire de mise à jour des détails du professeur -->
+        <form @submit.prevent="createProfessor">
           <div class="mb-6">
-            <label for="professorName" class="block text-gray-700 text-sm font-bold mb-2">Nom du Professeur</label>
+            <label for="lastname" class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
             <input
-              id="professorName"
-              v-model="professor.name"
+              id="lastname"
+              v-model="professor.lastName"
               class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               type="text"
-              placeholder="Nom du professeur"
+              placeholder="Nom"
               required
             />
           </div>
 
           <div class="mb-6">
-            <label for="professorSpeciality" class="block text-gray-700 text-sm font-bold mb-2">Spécialité</label>
+            <label for="firstname" class="block text-gray-700 text-sm font-bold mb-2">Prénom</label>
             <input
-              id="professorSpeciality"
-              v-model="professor.speciality"
+              id="firstname"
+              v-model="professor.firstName"
               class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               type="text"
-              placeholder="Spécialité du professeur"
+              placeholder="Prénom"
               required
             />
+          </div>
+
+          <div class="mb-6">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+            <input
+              id="email"
+              v-model="professor.email"
+              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              type="email"
+              placeholder="Adresse email"
+              required
+            />
+          </div>
+
+          <div class="mb-6">
+  <label for="speciality_id" class="block text-gray-700 text-sm font-bold mb-2">Spécialité</label>
+  <select
+    id="speciality_id"
+    v-model="professor.speciality_id"
+    class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+    required
+  >
+    <option disabled value="">Sélectionnez une spécialité</option>
+    <option v-for="speciality in specialities" :key="speciality.id" :value="speciality.id">
+      {{ speciality.name }}
+    </option>
+  </select>
+</div>
+
+
+          <!-- Dropdown pour les salles -->
+          <div class="mb-6">
+            <label for="room_id" class="block text-gray-700 text-sm font-bold mb-2">Salle</label>
+            <select
+              id="room_id"
+              v-model="professor.room_id"
+              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              required
+            >
+              <option disabled value="">Sélectionnez une salle</option>
+              <option v-for="room in rooms" :key="room.id" :value="room.id">
+                {{ room.name }}
+              </option>
+            </select>
           </div>
 
           <div class="flex justify-between">
@@ -51,7 +95,7 @@
 <script setup>
 import { onMounted, ref } from 'vue';
 import { useRoute, useRouter } from 'vue-router';
-import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le chemin est correct
+import Sidebar from '../components/common/Sidebar.vue';
 
 const route = useRoute();
 const router = useRouter();
@@ -59,31 +103,53 @@ const router = useRouter();
 // Représente l'objet du professeur
 const professor = ref({
   id: '',
-  name: '',
-  speciality: '',
+  lastname: '',
+  firstname: '',
+  email: '',
+  role: 'professor',
+  speciality_id: '',
+  room_id: '', 
 });
 
-// Fonction pour récupérer les détails du professeur depuis le backend
-const fetchProfessorDetails = async () => {
-  const professorId = route.params.id;  // Utilisation de l'ID du professeur dans l'URL
+
+const rooms = ref([]);
+
+const specialities = ref([]); 
+
+
+const fetchSpecialities = async () => {
   try {
-    const response = await fetch(`/api/professors/${professorId}`);
+    const response = await fetch('http://localhost:8080/speciality'); 
     if (response.ok) {
       const data = await response.json();
-      professor.value = data;  
+      specialities.value = data;
     } else {
-      console.error("Erreur de récupération des données");
+      console.error('Erreur lors de la récupération des spécialités');
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération des données :", error);
+    console.error('Erreur lors de la récupération des spécialités :', error);
   }
 };
 
-// Fonction pour mettre à jour le professeur
-const updateProfessor = async () => {
+const fetchRooms = async () => {
   try {
-    const response = await fetch(`/api/professors/${professor.value.id}`, {
-      method: 'PUT',
+    const response = await fetch('http://localhost:8080/room'); 
+    if (response.ok) {
+      const data = await response.json();
+      rooms.value = data;
+    } else {
+      console.error('Erreur lors de la récupération des salles');
+    }
+  } catch (error) {
+    console.error('Erreur lors de la récupération des salles :', error);
+  }
+};
+
+
+const createProfessor = async () => {
+  try {
+    const response = await fetch(`http://localhost:8080/user/create`, {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
@@ -91,18 +157,20 @@ const updateProfessor = async () => {
     });
 
     if (response.ok) {
-      alert("Professeur mis à jour avec succès !");
-      router.push('/professors');  // Rediriger vers la liste des professeurs après la mise à jour
+      alert('Professeur ajouté avec succès !');
+      router.push('/professor'); 
     } else {
-      console.error("Erreur de mise à jour");
+      console.error('Erreur lors de la création du professeur');
     }
   } catch (error) {
-    console.error("Erreur lors de la mise à jour :", error);
+    console.error('Erreur lors de la création du professeur :', error);
   }
 };
 
-// Charger les données du professeur au montage du composant
+
+
 onMounted(() => {
-  fetchProfessorDetails();
+  fetchRooms();
+  fetchSpecialities();
 });
 </script>

@@ -12,6 +12,28 @@ export class RoomService {
     return res;
   }
 
+  async getRooms() {
+    const rooms = await this.model.findAll();
+    return rooms;
+  }
+
+  async findRoomById(id) {
+    try {
+      return await this.model.findByPk(id);
+    } catch (error) {
+      console.error("Erreur lors de la récupération de la salle :", error);
+      throw error;
+    }
+  }
+
+  async deleteRoom(id) {
+    const res = await this.model.destroy({
+      where: { id: id },
+    });
+
+    return res;
+  }
+
   async findRoomByName(name) {
     const room = await this.model.findOne({
       where: { name: name },
@@ -22,7 +44,7 @@ export class RoomService {
 
   async findAvailableRooms() {
     const rooms = await this.model.findAll({
-      where: { isAvailable: true },
+      where: { is_available: true },
     });
 
     return rooms;
@@ -30,7 +52,7 @@ export class RoomService {
 
   async updateRoomAvailability(roomId, availability) {
     const room = await this.model.update(
-      { isAvailable: availability },
+      { is_available: availability },
       { where: { id: roomId } }
     );
 

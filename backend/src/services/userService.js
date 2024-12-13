@@ -14,6 +14,7 @@ export class UserService {
     return res;
   }
 
+
   async findUser(email, password) {
     const user = await this.model.findOne({
       where: {
@@ -35,5 +36,29 @@ export class UserService {
   
     return user;
   }
-  
+
+  async findAll() {
+    const users = await this.model.findAll();
+    return users;
+  }
+
+  async deleteUser(id) {
+    const res = await this.model.destroy({
+      where: { id: id },
+    });
+
+    return res;
+  }
+
+   async findUserById(id) {
+    try {
+      return await this.model.findByPk(id);
+    } catch (error) {
+      console.error("Erreur lors de la récupération de l'utilisateur :", error);
+      throw error;
+    }
+  }
+
+
+ 
 }

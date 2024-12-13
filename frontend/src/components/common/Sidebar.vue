@@ -12,10 +12,10 @@
         <router-link to="/professors" class="sidebar-link">Professeurs</router-link>
       </li>
       <li>
-        <router-link to="/rooms" class="sidebar-link">Salles</router-link>
+        <router-link to="/room" class="sidebar-link">Salles</router-link>
       </li>
       <li>
-        <router-link to="/speciality" class="sidebar-link">Spécialités</router-link>
+        <router-link to="/speciality" class="sidebar-link">Classe</router-link>
       </li>
     </ul>
   </aside>
