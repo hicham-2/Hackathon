@@ -4,8 +4,6 @@ import TheWelcome from '../components/auth/LoginForm.vue';
 
 <template>
   <div class="home">
-    <!-- Si vous voulez garder le logo Vue -->
-    <img alt="Vue logo" src="@/assets/logo.svg">
     <div class="content">
       <h1>Bienvenue sur le Planning AI</h1>
       <p>Système de gestion de planning intelligent</p>

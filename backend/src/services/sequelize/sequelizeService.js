@@ -108,7 +108,7 @@ export class SequelizeService {
 
   async synchronize() {
     // await this.sequelize.sync({ force: true });
-     await this.sequelize.sync({ alter: true });
+    await this.sequelize.sync({ alter: true });
   }
 
   static async get() {

@@ -2,13 +2,33 @@
   {
     "model": "0",
     "data": {
+      "email": "admin.1@mail.com",
+      "role": "admin",
+      "token": "IqQ5q8sc0-6rIvpt",
+      "hash": "E/W8FtvXIfQwRd5scdFbnnwIaJna4AmdKvYV9b6+i2Y=",
+      "salt": "-i0eu-nZ_s-B"
+    }
+  },
+  {
+    "model": "0",
+    "data": {
+      "email": "professeur.1@mail.com",
+      "role": "professor",
+      "token": "gBFv_UAKVYPSGwdz",
+      "hash": "l6XWUG186KAFxwQi/bnL4DJ2x2Z9VmgAu9gJk3WwiZM=",
+      "salt": "G7dbBzPjIGV0"
+    }
+  },
+  {
+    "model": "1",
+    "data": {
       "name": "Room A",
       "capacity": 30,
       "is_available": true
     }
   },
   {
-    "model": "0",
+    "model": "1",
     "data": {
       "name": "Room B",
       "capacity": 30,
@@ -16,21 +36,21 @@
     }
   },
   {
-    "model": "1",
+    "model": "2",
     "data": {
       "id": 1,
       "name": "IW"
     }
   },
   {
-    "model": "1",
+    "model": "2",
     "data": {
       "id": 2,
       "name": "IA"
     }
   },
   {
-    "model": "2",
+    "model": "3",
     "data": {
       "id": 1,
       "name": "Class 1A",
@@ -38,7 +58,7 @@
     }
   },
   {
-    "model": "2",
+    "model": "3",
     "data": {
       "id": 2,
       "name": "Class 2A",
@@ -46,7 +66,7 @@
     }
   },
   {
-    "model": "2",
+    "model": "3",
     "data": {
       "id": 3,
       "name": "Class 2B",
@@ -54,7 +74,7 @@
     }
   },
   {
-    "model": "3",
+    "model": "4",
     "data": {
       "id": 1,
       "name": "Docker",
@@ -62,16 +82,15 @@
     }
   },
   {
-    "model": "3",
+    "model": "4",
     "data": {
       "id": 2,
       "name": "JS",
       "duration": 20
     }
   },
-  
   {
-    "model": "6",
+    "model": "5",
     "data": {
       "id": 1,
       "user_id": 2,
