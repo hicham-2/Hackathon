@@ -5,6 +5,7 @@
     "@fullcalendar/interaction": "^6.1.15",
     "@fullcalendar/timegrid": "^6.1.15",
     "@fullcalendar/vue3": "^6.1.15",
+    "pinia": "^2.3.0",
     "vue-router": "^4.0.13"
   },
   "devDependencies": {

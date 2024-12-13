@@ -25,15 +25,11 @@ export class UserService {
     return user;
   }
 
- 
-  async findOne(email) {
+  async findOneBy(object) {
     const user = await this.model.findOne({
-      where: {
-        email: email,
-      },
+      where: object,
     });
-  
+
     return user;
   }
-  
 }

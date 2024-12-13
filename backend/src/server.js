@@ -8,6 +8,7 @@ import { UserController } from "./controllers/userController.js";
 import { canAccessDashboard } from "./middleware/is-admin.js";
 import { authMiddleware } from "./middleware/is-auth.js";
 import { AvailabilityController } from "./controllers/availabilityController.js";
+import { SequelizeService } from "./services/sequelize/sequelizeService.js";
 
 dotenv.config();
 
@@ -22,20 +23,20 @@ const availabilityController = new AvailabilityController();
 app.use(cors());
 app.use(express.json());
 
-app.use('/user', userController.buildRouter());
-app.use('/room', roomController.buildRouter());
-app.use('/course', courseController.buildRouter());
-app.use('/availabilities', availabilityController.buildRouter());
+app.use("/user", userController.buildRouter());
+app.use("/room", roomController.buildRouter());
+app.use("/course", courseController.buildRouter());
+app.use("/availabilities", availabilityController.buildRouter());
 app.get(
   "/admin/dashboard",
   authMiddleware, // Vérifie que le token est valide
   canAccessDashboard, // Vérifie que l'utilisateur est admin
   (req, res) => {
-    res.status(200).json({ message: "Bienvenue sur le tableau de bord admin !" });
+    res
+      .status(200)
+      .json({ message: "Bienvenue sur le tableau de bord admin !" });
   }
 );
-
-
 
 const PORT = process.env.PORT || 3000;
 
@@ -43,11 +44,10 @@ app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+app.post("/send-email", emailController.sendEmail.bind(emailController));
 
-app.post('/send-email', emailController.sendEmail.bind(emailController));
+app.listen(PORT, async () => {
+  const sequelizeService = await SequelizeService.get();
 
-app.listen(PORT,  () => {
   console.log(`Server is running on port ${PORT}`);
 });
-
-

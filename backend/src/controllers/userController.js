@@ -4,6 +4,8 @@ import { Router } from "express";
 import jwt from "jsonwebtoken"; // Import du module jsonwebtoken
 import uid2 from "uid2";
 import { SequelizeService } from "../services/sequelize/sequelizeService.js";
+import { canAccessDashboard } from "../middleware/is-admin.js";
+import { authMiddleware } from "../middleware/is-auth.js";
 
 export class UserController {
   async createUser(req, res) {
@@ -13,16 +15,15 @@ export class UserController {
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
 
     try {
-    //  const data = await loadFixtures();
-
+      //  const data = await loadFixtures();
 
       const sequelizeService = await SequelizeService.get();
 
       if (email && password) {
-        const userFoundByEmail = await sequelizeService.userService.findOne(
-          email
-        );
-        
+        const userFoundByEmail = await sequelizeService.userService.findOneBy({
+          email,
+        });
+
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
             role,
@@ -47,21 +48,21 @@ export class UserController {
 
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
-  
+
     if (!req.body || !req.body.email || !req.body.password) {
       return res.status(400).json({ message: "Données manquantes" });
     }
-  
+
     try {
-      const userFound = await sequelizeService.userService.findOne(
-        req?.body?.email
-      );
+      const userFound = await sequelizeService.userService.findOneBy({
+        email: req?.body?.email,
+      });
 
       if (userFound) {
         const generatedHash = SHA256(
           req.body?.password + userFound.salt
-        ).toString(base64);        
-        
+        ).toString(base64);
+
         if (generatedHash === userFound.hash) {
           res.status(200).json({
             _id: userFound._id,
@@ -79,19 +80,23 @@ export class UserController {
           .status(401)
           .json({ message: "email et/ou mot de passe incorrect(s)" });
       }
-      
     } catch (error) {
-     
-      res.status(400).json({ message: "Erreur lors de la connexion, veuillez réessayer" });
+      res
+        .status(400)
+        .json({ message: "Erreur lors de la connexion, veuillez réessayer" });
     }
   }
-  
-  
-    buildRouter() {
+
+  async checkRole(req, res) {
+    return res.status(200).json({ role: req.user.role });
+  }
+
+  buildRouter() {
     const router = Router();
 
     router.post("/login", this.login.bind(this));
     router.post("/create", this.createUser.bind(this));
+    router.get("/checkRole", authMiddleware, this.checkRole.bind(this));
     return router;
   }
 }
