@@ -168,28 +168,51 @@ export default {
       }
     },
     async addDateRange() {
-      if (!this.formData.startDate || !this.formData.endDate) {
-        alert('Veuillez sélectionner une date de début et de fin')
-        return
-      }
+  if (!this.formData.startDate || !this.formData.endDate) {
+    alert('Veuillez sélectionner une date de début et de fin');
+    return;
+  }
 
-      const calendarApi = this.$refs.calendar.getApi()
-      const startDate = new Date(this.formData.startDate)
-      startDate.setHours(8, 0, 0)
+  const calendarApi = this.$refs.calendar.getApi();
+  const startDate = new Date(this.formData.startDate);
+  startDate.setHours(8, 0, 0);
 
-      const endDate = new Date(this.formData.endDate)
-      endDate.setHours(20, 0, 0)
+  const endDate = new Date(this.formData.endDate);
+  endDate.setHours(20, 0, 0);
 
-      calendarApi.addEvent({
-        title: this.isAvailable ? 'Disponible' : 'Occupé',
-        start: startDate,
-        end: endDate,
-        backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
-      })
+  const newEvent = calendarApi.addEvent({
+    title: this.isAvailable ? 'Disponible' : 'Occupé',
+    start: startDate,
+    end: endDate,
+    backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
+  });
 
-      this.formData.startDate = ''
-      this.formData.endDate = ''
-    },
+  try {
+    const response = await fetch('http://localhost:8080/availabilities', {
+      method: 'POST',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({
+        user_id: 1, // Remplacez par l'ID réel de l'utilisateur connecté
+        start_datetime: startDate,
+        end_datetime: endDate,
+        is_available: this.isAvailable,
+      }),
+    });
+
+    if (!response.ok) throw new Error("Erreur lors de l'enregistrement.");
+
+    const data = await response.json();
+    newEvent.setProp('id', data.id);
+    console.log('Disponibilité enregistrée avec succès', data);
+  } catch (error) {
+    console.error(error);
+    newEvent.remove();
+    alert("Une erreur est survenue lors de l'enregistrement.");
+  }
+
+  this.formData.startDate = '';
+  this.formData.endDate = '';
+},
   },
 }
 </script>

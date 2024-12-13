@@ -2,6 +2,7 @@ import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
 import { CourseController } from "./controllers/courseController.js";
+import { EmailController } from "./controllers/emailController.js";
 import { RoomController } from "./controllers/roomController.js";
 import { UserController } from "./controllers/userController.js";
 import { canAccessDashboard } from "./middleware/is-admin.js";
@@ -14,6 +15,7 @@ const app = express();
 const userController = new UserController();
 const roomController = new RoomController();
 const courseController = new CourseController();
+const emailController = new EmailController();
 const availabilityController = new AvailabilityController();
 
 // Middleware
@@ -34,12 +36,18 @@ app.get(
 );
 
 
+
 const PORT = process.env.PORT || 3000;
 
 app.get("/", (req, res) => {
   res.send("Hello World!");
 });
 
+
+app.post('/send-email', emailController.sendEmail.bind(emailController));
+
 app.listen(PORT,  () => {
   console.log(`Server is running on port ${PORT}`);
 });
+
+
