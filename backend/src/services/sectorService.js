@@ -1,7 +1,9 @@
 import sectorModel from "../models/sectorModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class SectorService {
+export class SectorService extends GenericQuery {
   constructor(sequelizeService) {
+    super();
     this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Sectors", sectorModel);
@@ -23,7 +25,7 @@ export class SectorService {
 
   async findAllSectors() {
     const sectors = await this.model.findAll();
-    
+
     return sectors;
   }
 

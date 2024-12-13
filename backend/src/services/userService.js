@@ -1,7 +1,9 @@
 import userModel from "../models/userModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class UserService {
+export class UserService extends GenericQuery {
   constructor(sequelizeService) {
+    super();
     this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Users", userModel, {
@@ -12,24 +14,5 @@ export class UserService {
   async createUser(user) {
     const res = await this.model.create(user);
     return res;
-  }
-
-  async findUser(email, password) {
-    const user = await this.model.findOne({
-      where: {
-        email: email,
-        password: password,
-      },
-    });
-
-    return user;
-  }
-
-  async findOneBy(object) {
-    const user = await this.model.findOne({
-      where: object,
-    });
-
-    return user;
   }
 }

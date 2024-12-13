@@ -53,7 +53,7 @@ export class AvailabilityController {
     const sequelizeService = await SequelizeService.get();
 
     try {
-      const availability = await sequelizeService.availabilityService.findById(id);
+      const availability = await sequelizeService.findOneBy({id});
 
       if (!availability) {
         return res.status(404).json({ message: "Disponibilité introuvable." });

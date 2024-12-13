@@ -1,8 +1,10 @@
 import availabilityModel from "../models/availabilityModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class AvailabilityService {
+export class AvailabilityService extends GenericQuery{
   constructor(sequelizeService) {
-    this.sequelizeService = sequelizeService.sequelize;
+        super(); 
+this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define(
       "Availabilities",
@@ -21,14 +23,6 @@ export class AvailabilityService {
     });
 
     return unavailabilities;
-  }
-
-  async findById(id) {
-    const unavailability = await this.model.findOne({
-      where: { id },
-    });
-
-    return unavailability;
   }
 
   async updateUnavailability(id, updateData) {

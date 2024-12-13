@@ -1,7 +1,9 @@
 import slotModel from "../models/slotModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class SlotService {
+export class SlotService extends GenericQuery {
   constructor(sequelizeService) {
+    super();
     this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Slots", slotModel);
@@ -10,14 +12,6 @@ export class SlotService {
   async createSlot(slot) {
     const res = await this.model.create(slot);
     return res;
-  }
-
-  async findSlotById(slotId) {
-    const slot = await this.model.findOne({
-      where: { id: slotId },
-    });
-
-    return slot;
   }
 
   async findSlotsByDateRange(startDateTime, endDateTime) {

@@ -1,8 +1,10 @@
 import professorSpecialityModel from "../models/professorSpecialityModel.js"; // Importer le modèle de la table de jonction
+import { GenericQuery } from "./serviceQuery.js";
 
-export class ProfessorSpecialityService {
+export class ProfessorSpecialityService extends GenericQuery{
   constructor(sequelizeService) {
-    this.sequelizeService = sequelizeService.sequelize;
+        super(); 
+this.sequelizeService = sequelizeService.sequelize;
 
     // Définir le modèle ProfessorSpeciality dans Sequelize
     this.model = this.sequelizeService.define("ProfessorSpeciality", professorSpecialityModel,  { tableName: "ProfessorSpeciality" });

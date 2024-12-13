@@ -1,8 +1,10 @@
 import courseModel from "../models/courseModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class CourseService {
+export class CourseService extends GenericQuery{
   constructor(sequelizeService) {
-    this.sequelizeService = sequelizeService.sequelize;
+        super(); 
+this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Courses", courseModel);
   }
