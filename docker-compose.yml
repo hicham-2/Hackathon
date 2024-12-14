@@ -1,6 +1,5 @@
 services:
   backend:
-    container_name: backend
     build:
       context: ./backend
       target: dev
@@ -18,7 +17,6 @@ services:
       - "8080:${SERVER_PORT:-3000}"
   db:
     image: postgres
-    container_name: db
     restart: always
     ports:
       - "5432:5432"
@@ -29,7 +27,6 @@ services:
     volumes:
       - postgres_data:/var/lib/postgresql/data
   frontend:
-    container_name: frontend
     build:
       context: ./frontend
       target: dev

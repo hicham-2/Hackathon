@@ -8,3 +8,12 @@ export default {
   plugins: [],
 
 }
+module.exports = {
+  theme: {
+    extend: {
+      colors: {
+        'custom-blue': '#B0E1EA',
+      },
+    },
+  },
+}

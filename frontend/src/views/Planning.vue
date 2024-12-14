@@ -1,17 +1,31 @@
 <template>
-  <div class="flex h-screen">
+  <div class="flex min-h-screen bg-gray-50">
     <!-- Sidebar -->
     <Sidebar />
-
+    
     <!-- Contenu principal -->
-    <div class="planning-page flex-1 p-8 bg-gray-100">
-      <h1 class="text-3xl font-bold mb-4">Planning</h1>
-     
-      <div class="calendar-container">
-        <FullCalendar
-          ref="calendar"
-          :options="calendarOptions"
-        />
+    <div class="flex-1 flex flex-col">
+      <!-- Header -->
+      <header class="bg-white shadow-sm px-8 py-6">
+        <div class="flex justify-between items-center">
+          <h1 class="text-2xl font-semibold text-gray-800">Planning</h1>
+          <div class="flex space-x-4">
+            <button class="px-4 py-2 bg-indigo-600 text-white rounded-lg hover:bg-indigo-700 transition-colors">
+              Aujourd'hui
+            </button>
+          </div>
+        </div>
+      </header>
+
+      <!-- Contenu du calendrier -->
+      <div class="flex-1 p-8">
+        <div class="bg-white rounded-xl shadow-sm p-6">
+          <FullCalendar
+            ref="calendar"
+            :options="calendarOptions"
+            class="fc-theme-standard"
+          />
+        </div>
       </div>
     </div>
   </div>
@@ -29,13 +43,11 @@ export default {
   components: {
     Sidebar,
     FullCalendar,
-    
-    
   },
   data() {
     return {
       calendarOptions: {
-        plugins: [timeGridPlugin, interactionPlugin ],
+        plugins: [timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
         locale: frLocale,
         selectable: true,
@@ -45,7 +57,7 @@ export default {
         slotMinTime: '08:00:00',
         slotMaxTime: '20:00:00',
         headerToolbar: {
-          left: 'prev,next today',
+          left: 'prev,next',
           center: 'title',
           right: 'timeGridDay,timeGridWeek'
         },
@@ -58,16 +70,22 @@ export default {
           minute: '2-digit',
           meridiem: false,
         },
-        eventContent: (info) => {
-          return {
-            html: `
-              <div>
-                <strong>${info.event.title}</strong>
-                <br>
-                ${info.timeText}
-              </div>
-            `,
-          };
+        eventContent: (info) => ({
+          html: `
+            <div class="p-2">
+              <div class="font-semibold">${info.event.title}</div>
+              <div class="text-sm mt-1">${info.timeText}</div>
+            </div>
+          `
+        }),
+        // Personnalisation supplémentaire
+        height: 'auto',
+        allDaySlot: false,
+        slotDuration: '01:00:00',
+        businessHours: {
+          daysOfWeek: [1, 2, 3, 4, 5],
+          startTime: '08:00',
+          endTime: '20:00',
         },
       },
     };
@@ -80,7 +98,9 @@ export default {
         title,
         start: selectInfo.start,
         end: selectInfo.end,
-        backgroundColor: '#4CAF50',
+        backgroundColor: '#4F46E5', // Couleur Indigo de Tailwind
+        borderColor: '#4F46E5',
+        textColor: '#ffffff',
       });
     },
     handleEventClick(clickInfo) {
@@ -95,20 +115,49 @@ export default {
 };
 </script>
 
-<style scoped>
-.planning-page {
-  padding: 20px;
-  background-color: #f7fafc;
+<style>
+/* Personnalisation du calendrier */
+:deep(.fc) {
+  @apply font-sans;
 }
 
-.planning-page h1 {
-  font-size: 2rem;
-  font-weight: bold;
-  color: #333;
+:deep(.fc-toolbar-title) {
+  @apply text-gray-800 text-xl font-semibold;
 }
 
-.calendar-container {
-  width: 100%;
-  max-width: 1200px;
+:deep(.fc-button-primary) {
+  @apply bg-gray-100 text-gray-700 border-0 shadow-sm hover:bg-gray-200 !important;
+}
+
+:deep(.fc-button-primary:not(:disabled).fc-button-active) {
+  @apply bg-indigo-600 text-white !important;
+}
+
+:deep(.fc-timegrid-slot) {
+  @apply h-16 !important;
+}
+
+:deep(.fc-timegrid-event) {
+  @apply rounded-md shadow-sm !important;
+}
+
+:deep(.fc-event) {
+  @apply border-0 rounded-lg overflow-hidden;
+}
+
+:deep(.fc-scrollgrid) {
+  @apply border-gray-200;
+}
+
+:deep(.fc-col-header-cell) {
+  @apply bg-gray-50 py-4;
+}
+
+:deep(.fc-timegrid-axis) {
+  @apply border-r border-gray-200;
+}
+
+:deep(.fc-timegrid-slot-label) {
+  @apply text-sm text-gray-600;
 }
 </style>
