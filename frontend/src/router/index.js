@@ -34,7 +34,7 @@ const routes = [
     path: '/professors',
     name: 'Professors',
     component: Professors,
-    meta: { requiresAuth: true, roles: ['admin', 'professor'] },
+    meta: { requiresAuth: true, roles: ['admin']},
   },
   {
     path: '/speciality',
@@ -47,7 +47,7 @@ const routes = [
     path: '/intervenant',
     name: 'intervenant',
     component: IntervenantView,
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['admin', 'professor'] },
   },
   {
     path: '/global-calendar',

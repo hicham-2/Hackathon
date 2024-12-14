@@ -8,11 +8,13 @@ export const authMiddleware = async (req, res, next) => {
       .json({ message: "Accès non autorisé : token manquant" });
   }
 
+  const cleanedToken = token.replace(/['"]+/g, '');
+
   try {
     const sequelizeService = await SequelizeService.get();
 
-    const userFound = await sequelizeService.userService.findOneBy({
-      token,
+    const userFound = await sequelizeService.userService.findOneById({
+      token: cleanedToken,
     });
 
     if (!userFound) {

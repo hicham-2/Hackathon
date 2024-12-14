@@ -85,8 +85,8 @@ export default {
       this.isAvailable = !this.isAvailable
     },
     async handleDateSelect(selectInfo) {
-      const title = this.isAvailable ? 'Disponible' : 'Occupé'
-      const calendarApi = selectInfo.view.calendar
+      const title = this.isAvailable ? 'Disponible' : 'Occupé';
+      const calendarApi = selectInfo.view.calendar;
 
       const newEvent = calendarApi.addEvent({
         title,
@@ -94,28 +94,36 @@ export default {
         end: selectInfo.end,
         backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
         allDay: selectInfo.allDay,
-      })
+      });
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
 
       try {
         const response = await fetch('http://localhost:8080/availabilities', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
           body: JSON.stringify({
-            user_id: 1, // A remplacer par l'id du user co
             start_datetime: selectInfo.start,
             end_datetime: selectInfo.end,
             is_available: this.isAvailable,
           }),
-        })
+        });
 
-        if (!response.ok) throw new Error("Erreur lors de l'enregistrement.")
+        if (!response.ok) throw new Error("Erreur lors de l'enregistrement.");
 
-        const data = await response.json()
-        newEvent.setProp('id', data.id)
-        console.log('Disponibilité enregistrée avec succès', data)
+        const data = await response.json();
+        newEvent.setProp('id', data.id);
+        console.log('Disponibilité enregistrée avec succès', data);
       } catch (error) {
-        console.error(error)
-        newEvent.remove()
+        console.error(error);
+        newEvent.remove();
       }
     },
     async handleEventClick(clickInfo) {
@@ -168,51 +176,67 @@ export default {
       }
     },
     async addDateRange() {
-  if (!this.formData.startDate || !this.formData.endDate) {
-    alert('Veuillez sélectionner une date de début et de fin');
-    return;
-  }
+      if (!this.formData.startDate || !this.formData.endDate) {
+        alert('Veuillez sélectionner une date de début et de fin');
+        console.error('Dates manquantes :', {
+          startDate: this.formData.startDate,
+          endDate: this.formData.endDate,
+        });
+        return;
+      }
 
-  const calendarApi = this.$refs.calendar.getApi();
-  const startDate = new Date(this.formData.startDate);
-  startDate.setHours(8, 0, 0);
+      const calendarApi = this.$refs.calendar.getApi();
+      const startDate = new Date(this.formData.startDate);
+      startDate.setHours(8, 0, 0);
 
-  const endDate = new Date(this.formData.endDate);
-  endDate.setHours(20, 0, 0);
+      const endDate = new Date(this.formData.endDate);
+      endDate.setHours(20, 0, 0);
 
-  const newEvent = calendarApi.addEvent({
-    title: this.isAvailable ? 'Disponible' : 'Occupé',
-    start: startDate,
-    end: endDate,
-    backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
-  });
+      const newEvent = calendarApi.addEvent({
+        title: this.isAvailable ? 'Disponible' : 'Occupé',
+        start: startDate,
+        end: endDate,
+        backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
+      });
 
-  try {
-    const response = await fetch('http://localhost:8080/availabilities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: 1, // Remplacez par l'ID réel de l'utilisateur connecté
-        start_datetime: startDate,
-        end_datetime: endDate,
-        is_available: this.isAvailable,
-      }),
-    });
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        console.error('Token manquant dans le localStorage.');
+        newEvent.remove();
+        return;
+      }
+      try {
+        const response = await fetch('http://localhost:8080/availabilities', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            start_datetime: startDate,
+            end_datetime: endDate,
+            is_available: this.isAvailable,
+          }),
+        });
 
-    if (!response.ok) throw new Error("Erreur lors de l'enregistrement.");
+        if (!response.ok) {
+          console.error('Réponse brute :', response);
+          throw new Error("Erreur lors de l'enregistrement.");
+        }
 
-    const data = await response.json();
-    newEvent.setProp('id', data.id);
-    console.log('Disponibilité enregistrée avec succès', data);
-  } catch (error) {
-    console.error(error);
-    newEvent.remove();
-    alert("Une erreur est survenue lors de l'enregistrement.");
-  }
+        const data = await response.json();
+        newEvent.setProp('id', data.id);
+        console.log('Disponibilité enregistrée avec succès :', data);
+      } catch (error) {
+        console.error('Erreur attrapée :', error);
+        newEvent.remove();
+        alert("Une erreur est survenue lors de l'enregistrement.");
+      }
 
-  this.formData.startDate = '';
-  this.formData.endDate = '';
-},
+      this.formData.startDate = '';
+      this.formData.endDate = '';
+    },
   },
 }
 </script>

@@ -1,23 +1,30 @@
 import { Router } from "express";
 import { SequelizeService } from "../services/sequelize/sequelizeService.js";
+import { authMiddleware } from '../middleware/is-auth.js';
 
 export class AvailabilityController {
   async createAvailability(req, res) {
-    const { user_id, start_datetime, end_datetime, is_available } = req.body;
+    const { start_datetime, end_datetime, is_available } = req.body;
+    console.log("Données reçues :", { start_datetime, end_datetime, is_available });
+  
+    if (!start_datetime || !end_datetime || is_available === undefined) {
+      return res.status(400).json({ message: "Tous les champs sont requis." });
+    }
+  
+    const user_id = req.user?.id;
+    console.log("Utilisateur associé :", user_id);
+  
     const sequelizeService = await SequelizeService.get();
-
+  
     try {
-      if (!user_id || !start_datetime || !end_datetime || is_available === undefined) {
-        return res.status(400).json({ message: "Tous les champs sont requis." });
-      }
-
       const availability = await sequelizeService.availabilityService.createUnavailability({
         user_id,
         start_datetime,
         end_datetime,
         is_available,
       });
-
+  
+      console.log("Disponibilité créée :", availability);
       res.status(201).json(availability);
     } catch (error) {
       console.error("Erreur lors de la création d'une disponibilité :", error);
@@ -106,7 +113,7 @@ export class AvailabilityController {
   buildRouter() {
     const router = Router();
 
-    router.post("/", this.createAvailability.bind(this));
+    router.post("/", authMiddleware, this.createAvailability.bind(this));
     router.get("/professor/:professorId", this.getAvailabilitiesByProfessor.bind(this));
     router.get("/:id", this.getAvailabilityById.bind(this));
     router.put("/:id", this.updateAvailability.bind(this));
