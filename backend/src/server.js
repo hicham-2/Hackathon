@@ -10,6 +10,8 @@ import { authMiddleware } from "./middleware/is-auth.js";
 import { AvailabilityController } from "./controllers/availabilityController.js";
 import { SectorController } from "./controllers/sectorController.js";
 import { SequelizeService } from "./services/sequelize/sequelizeService.js";
+import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
+
 
 dotenv.config();
 
@@ -20,6 +22,7 @@ const courseController = new CourseController();
 const emailController = new EmailController();
 const availabilityController = new AvailabilityController();
 const sectorController = new SectorController();
+const professorSpecialityController = new ProfessorSpecialityController();
 
 // Middleware
 app.use(cors());
@@ -29,6 +32,7 @@ app.use('/user', userController.buildRouter());
 app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
 app.use('/availabilities', availabilityController.buildRouter());
+app.use('/professor-speciality', professorSpecialityController.buildRouter());
 app.use('/sector', sectorController.buildRouter());
 app.get(
   "/admin/dashboard",
