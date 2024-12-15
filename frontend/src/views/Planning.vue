@@ -188,7 +188,7 @@ export default {
       }
 
       try {
-        const classId = 2;
+        const classId = 1;
 
         const response = await fetch(`http://localhost:8080/planning/generate`, {
           method: 'POST',
