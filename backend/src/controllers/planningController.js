@@ -75,7 +75,7 @@ export class PlanningController {
       attributes: ["id", "name", "duration"],
     });
 
-    const generateSchoolSchedule = new PlanningGenerator(
+    const planningGenerator = new PlanningGenerator(
       ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday"],
       [
         { start: "10:00", end: "13:00" }, // Morning session
@@ -87,9 +87,11 @@ export class PlanningController {
         courses: coursesOnly,
         professorsAvailable: professorsAvailable,
       }
-    ).generateSchoolSchedule();
+    );
 
-    res.status(200).json(generateSchoolSchedule);
+    const planning = await planningGenerator.generateSchoolSchedule()
+    
+    res.status(200).json(planning);
 
     try {
     } catch (error) {
