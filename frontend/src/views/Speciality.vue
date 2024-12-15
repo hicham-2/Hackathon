@@ -69,7 +69,7 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
   // Fonction pour mettre à jour la spécialité
   const updateSpeciality = async () => {
     try {
-      const response = await fetch(`api/api/specialities/${speciality.value.id}`, {
+      const response = await fetch(`http://localhost:8080/specialities/${speciality.value.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',

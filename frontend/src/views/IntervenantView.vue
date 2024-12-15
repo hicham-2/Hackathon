@@ -80,7 +80,6 @@ export default {
   },
   methods: {
     async fetchAvailabilities() {
-      const professorId = 4; // À remplacer par une logique dynamique si besoin
       const token = localStorage.getItem('token');
 
       if (!token) {
@@ -89,7 +88,7 @@ export default {
       }
 
       try {
-        const response = await fetch(`http://localhost:8080/availabilities/${professorId}`, {
+        const response = await fetch(`http://localhost:8080/availabilities`, {
           headers: {
             'Authorization': `Bearer ${token}`,
           },

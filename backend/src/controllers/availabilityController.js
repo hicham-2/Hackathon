@@ -55,9 +55,10 @@ export class AvailabilityController {
   }
   
 
-  async getAvailabilityById(req, res) {
+  async getAvailabilityByUser(req, res) {
     const sequelizeService = await SequelizeService.get();
     const user_id = req.user?.id;
+
     try {
       const availability = await sequelizeService.availabilityService.findByProfessor(user_id);
 
@@ -112,9 +113,9 @@ export class AvailabilityController {
   buildRouter() {
     const router = Router();
 
+    router.get("/", authMiddleware, this.getAvailabilityByUser.bind(this));
     router.post("/", authMiddleware, this.createAvailability.bind(this));
     router.get("/professor/:professorId", this.getAvailabilitiesByProfessor.bind(this));
-    router.get("/:id", authMiddleware, this.getAvailabilityById.bind(this));
     router.put("/:id", this.updateAvailability.bind(this));
     router.delete("/:id", this.deleteAvailability.bind(this));
 
