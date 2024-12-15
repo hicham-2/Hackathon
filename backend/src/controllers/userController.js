@@ -23,15 +23,12 @@ export class UserController {
     try {
       const sequelizeService = await SequelizeService.get();
   
-      // Vérifier si l'utilisateur existe déjà
       const userFoundByEmail = await sequelizeService.userService.findOneBy({ email });
   
       if (userFoundByEmail) {
-        // Si l'utilisateur existe déjà, retourner un message d'erreur
         return res.status(409).json({ message: "Utilisateur déjà existant" });
       }
   
-      // Créer un nouvel utilisateur
       const user = await sequelizeService.userService.createUser({
         firstName,
         lastName,
