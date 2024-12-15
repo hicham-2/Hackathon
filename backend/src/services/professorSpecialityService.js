@@ -1,26 +1,27 @@
 import professorSpecialityModel from "../models/professorSpecialityModel.js"; // Importer le modèle de la table de jonction
+import { GenericQuery } from "./serviceQuery.js";
 
-export class ProfessorSpecialityService {
+export class ProfessorSpecialityService extends GenericQuery{
   constructor(sequelizeService) {
-    this.sequelizeService = sequelizeService.sequelize;
+        super(); 
+this.sequelizeService = sequelizeService.sequelize;
 
-    // Définir le modèle ProfessorSpeciality dans Sequelize
     this.model = this.sequelizeService.define("ProfessorSpeciality", professorSpecialityModel,  { tableName: "ProfessorSpeciality" });
   }
 
-  async createProfessorSpeciality(professorId, specialityId) {
+  async createProfessorSpeciality(user_id, course_id) {
     const professorSpeciality = await this.model.create({
-      professor_id: professorId,
-      speciality_id: specialityId,
+      user_id: user_id,
+      course_id: course_id,
     });
     return professorSpeciality;
   }
 
-  async findProfessorSpeciality(professorId, specialityId) {
+  async findProfessorSpeciality(user_id, course_id) {
     const relation = await this.model.findOne({
       where: {
-        professor_id: professorId,
-        speciality_id: specialityId,
+        user_id: user_id,
+        course_id: course_id,
       },
     });
     return relation;
@@ -33,17 +34,41 @@ export class ProfessorSpecialityService {
   }
 
 
-  async findSpecialitiesByProfessor(professorId) {
+  async findSpecialitiesByProfessor(user_id) {
     const relations = await this.model.findAll({
-      where: { professor_id: professorId },
+      where: { user_id: user_id },
     });
     return relations;
   }
 
-  async findProfessorsBySpeciality(specialityId) {
+  async findProfessorsBySpeciality(course_id) {
     const relations = await this.model.findAll({
-      where: { speciality_id: specialityId },
+      where: { course_id: course_id },
     });
     return relations;
   }
+  async updateProfessorSpeciality(id, data) {
+    const speciality = await this.model.findByPk(id);
+
+    if (speciality) {
+
+      return await speciality.update(data);
+    }
+
+    throw new Error("Professor speciality not found");
+  }
+
+
+  async deleteProfessorSpeciality(id) {
+    const speciality = await this.model.findByPk(id);
+
+    if (speciality) {
+      return await speciality.destroy();
+    }
+
+    throw new Error("Professor speciality not found");
+  }
+
 }
+
+

@@ -16,15 +16,12 @@
     </div>
   </template>
   
-  <script>
+  <script setup>
 import Sidebar from '../components/common/Sidebar.vue';
-  
-  export default {
-    components: {
-      Sidebar,
-    
-    }
-  }
+ 
+import { useAuthStore } from '@/stores/modules/auth';
+
+const authStore = useAuthStore();
   </script>
   
   <style scoped>

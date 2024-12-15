@@ -1,67 +1,55 @@
-const state = {
-  user: JSON.parse(localStorage.getItem('user')) || null, // Récupérer l'utilisateur depuis le stockage local si disponible
-  token: localStorage.getItem('token') || null, // Récupérer le token depuis le stockage local
-};
+import { defineStore } from 'pinia'
 
-const mutations = {
-  setUser(state, user) {
-    state.user = user;
-    localStorage.setItem('user', JSON.stringify(user)); // Sauvegarder l'utilisateur dans le stockage local
-  },
-  setToken(state, token) {
-    state.token = token;
-    localStorage.setItem('token', token); // Sauvegarder le token dans le stockage local
-  },
-  clearAuth(state) {
-    state.user = null;
-    state.token = null;
-    localStorage.removeItem('user');
-    localStorage.removeItem('token');
-  },
-};
+export const useAuthStore = defineStore('auth', {
+  state: () => ({
+    role: JSON.parse(localStorage.getItem('role')) || null,
+    token: JSON.parse(localStorage.getItem('token')) || null,
+  }),
+  actions: {
+    setRole(role) {
+      this.role = role
+      localStorage.setItem('role', JSON.stringify(role)) // Save to local storage
+    },
+    setToken(token) {
+      this.token = token
+      localStorage.setItem('token', JSON.stringify(token)) // Save to local storage
+    },
+    clearAuth() {
+      this.role = null
+      this.token = null
+      localStorage.removeItem('role')
+      localStorage.removeItem('token')
+    },
+    async login(email, password) {
+      try {
+        const response = await fetch('http://localhost:8080/user/login', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            email,
+            password,
+          }),
+        })
 
-const actions = {
-  async login({ commit }, { email, password }) {
-    try {
-      const response = await fetch('/api/login', {
-        method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: JSON.stringify({ email, password }),
-      });
+        const data = await response.json()
+        console.log(data)
 
-      if (!response.ok) {
-        throw new Error('Échec de la connexion');
+        this.setRole(data.role)
+        this.setToken(data.token)
+
+        return response
+      } catch (error) {
+        console.error('Login error:', error)
       }
-
-      const data = await response.json();
-      commit('setUser', data.user);
-      commit('setToken', data.token);
-
-      // Rediriger l'utilisateur après la connexion
-      this.$router.push('/');
-    } catch (error) {
-      console.error('Erreur lors de la connexion :', error);
-      // Vous pouvez ici afficher un message d'erreur à l'utilisateur
-    }
+    },
+    logout() {
+      this.clearAuth()
+    },
   },
-
-  logout({ commit }) {
-    commit('clearAuth');
-    this.$router.push('/login'); // Rediriger vers la page de connexion après la déconnexion
+  getters: {
+    isAuthenticated: (state) => !!state.token,
+    isAdmin: (state) => state.role === 'admin',
   },
-};
-
-const getters = {
-  isAuthenticated: (state) => !!state.token, // L'utilisateur est authentifié si un token est présent
-  user: (state) => state.user,
-};
-
-export default {
-  namespaced: true,
-  state,
-  mutations,
-  actions,
-  getters,
-};
+})

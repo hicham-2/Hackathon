@@ -1,7 +1,9 @@
 import userModel from "../models/userModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class UserService {
+export class UserService extends GenericQuery {
   constructor(sequelizeService) {
+    super();
     this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Users", userModel, {

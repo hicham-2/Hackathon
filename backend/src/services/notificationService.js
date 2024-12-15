@@ -1,8 +1,10 @@
 import notificationModel from "../models/notificationModel.js";
+import { GenericQuery } from "./serviceQuery.js";
 
-export class NotificationService {
+export class NotificationService extends GenericQuery{
   constructor(sequelizeService) {
-    this.sequelizeService = sequelizeService.sequelize;
+        super(); 
+this.sequelizeService = sequelizeService.sequelize;
     this.model = this.sequelizeService.define(
       "Notification",
       notificationModel
@@ -23,11 +25,4 @@ export class NotificationService {
     return user;
   }
 
-  async findOne(email) {
-    const user = await this.model.findOne({
-      email: email,
-    });
-
-    return user;
-  }
 }

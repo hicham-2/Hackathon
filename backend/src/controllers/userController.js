@@ -2,6 +2,7 @@ import base64 from "crypto-js/enc-base64.js";
 import SHA256 from "crypto-js/sha256.js";
 import { Router } from "express";
 import uid2 from "uid2";
+import { authMiddleware } from "../middleware/is-auth.js";
 import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 
 export class UserController {
@@ -19,6 +20,14 @@ export class UserController {
         const sequelizeService = await SequelizeService.get();
         const userFoundByEmail = await sequelizeService.userService.findOne(email);
   
+      //  const data = await loadFixtures();
+
+
+      if (email && password) {
+        const userFoundByEmail = await sequelizeService.userService.findOneBy({
+          email,
+        });
+
         if (!userFoundByEmail) {
           const user = await sequelizeService.userService.createUser({
             firstName,
@@ -34,6 +43,9 @@ export class UserController {
         } else {
           res.status(409).json({ message: "Utilisateur déjà existant" });
         }
+        } else {
+          res.status(409).json({ message: "Utilisateur déjà existant" });
+        }
       } else {
         res.status(400).json({ message: "Données manquantes" });
       }
@@ -42,25 +54,25 @@ export class UserController {
       res.status(500).json({ error: "Error creating user" });
     }
   }
-  
+
 
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
-  
+
     if (!req.body || !req.body.email || !req.body.password) {
       return res.status(400).json({ message: "Données manquantes" });
     }
-  
+
     try {
-      const userFound = await sequelizeService.userService.findOne(
-        req?.body?.email
-      );
+      const userFound = await sequelizeService.userService.findOneBy({
+        email: req?.body?.email,
+      });
 
       if (userFound) {
         const generatedHash = SHA256(
           req.body?.password + userFound.salt
-        ).toString(base64);        
-        
+        ).toString(base64);
+
         if (generatedHash === userFound.hash) {
           res.status(200).json({
             _id: userFound._id,
@@ -78,10 +90,10 @@ export class UserController {
           .status(401)
           .json({ message: "email et/ou mot de passe incorrect(s)" });
       }
-      
     } catch (error) {
-     
-      res.status(400).json({ message: "Erreur lors de la connexion, veuillez réessayer" });
+      res
+        .status(400)
+        .json({ message: "Erreur lors de la connexion, veuillez réessayer" });
     }
   }
 
@@ -171,16 +183,21 @@ async getProfessorById(req, res) {
   }
 }
 
-  
-  
-    buildRouter() {
+async checkRole(req, res) {
+  return res.status(200).json({ role: req.user.role });
+}
+
+
+  buildRouter() {
     const router = Router();
+    
 
     router.post("/login", this.login.bind(this));
     router.post("/create", this.createUser.bind(this));
     router.get("/professors", this.getAllProfessors.bind(this));
     router.delete("/professors/:id", this.deleteProfessor.bind(this));
     router.get("/professors/:id", this.getProfessorById.bind(this));
+    router.get("/checkRole", authMiddleware, this.checkRole.bind(this));
     return router;
   }
 }
