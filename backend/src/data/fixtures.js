@@ -24,7 +24,7 @@ const loadFixtures = async () => {
 
     const fixturePath = path.resolve(__dirname, "fixtures_all_db.json");
 
-    sequelizeService.sequelize.drop();
+   // sequelizeService.sequelize.drop();
 
     const data = await sequelize_fixtures.loadFile(fixturePath, models);
     return data;

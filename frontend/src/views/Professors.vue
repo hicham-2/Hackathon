@@ -4,7 +4,7 @@
     <Sidebar />
 
     <!-- Contenu principal -->
-    <div class="w-full flex justify-center items-center flex-1 p-8">
+    <div class="w-full flex overflow-y-auto justify-center items-center flex-1 p-8">
       <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Ajouter un Professeur</h2>
 

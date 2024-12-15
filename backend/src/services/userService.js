@@ -63,4 +63,11 @@ export class UserService extends GenericQuery {
 
 
  
+  async findOneById(object) {
+    const slot = await this.model.findOne({
+      where: object,
+    });
+
+    return slot;
+  }
 }

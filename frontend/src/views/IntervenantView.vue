@@ -1,30 +1,57 @@
 <template>
-  <div class="calendar-container">
-    <!-- Formulaire de sélection de dates -->
-    <div class="date-selection-form mb-4">
-      <div class="form-group">
-        <label for="startDate">Date de début:</label>
-        <input type="date" id="startDate" v-model="formData.startDate" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label for="endDate">Date de fin:</label>
-        <input type="date" id="endDate" v-model="formData.endDate" class="form-control" />
-      </div>
-      <button @click="addDateRange" class="btn btn-primary mt-2">Ajouter au calendrier</button>
-      <!-- Nouveau bouton pour valider les disponibilités -->
-      <button @click="getSelectedSlots" class="btn btn-primary mt-2 ml-2">
-        Valider les disponibilités
-      </button>
-      <button
-        @click="toggleAvailability"
-        :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']"
-      >
-        {{ isAvailable ? 'Disponible' : 'Occupé' }}
-      </button>
-    </div>
+  <div class="flex min-h-screen">
+    <Sidebar />
+    <div class="flex-1 mx-20">
+      <!-- Header avec les contrôles -->
+      <div class="bg-white shadow-sm p-6">
+        <div class="flex flex-col gap-4">
+          <div class="flex justify-between items-center">
+            <h1 class="text-2xl font-semibold text-gray-800">Planning</h1>
+            <div class="flex space-x-4"></div>
+          </div>
 
-    <!-- Calendrier -->
-    <FullCalendar ref="calendar" :options="calendarOptions" />
+          <!-- Inputs pour les dates et heures -->
+          <div class="flex items-center gap-4">
+            <!-- Première ligne avec dates et heures -->
+            <div class="flex gap-4 flex-1">
+              <input type="date" v-model="formData.startDate"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50" />
+              <input type="date" v-model="formData.endDate"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50" />
+              <input type="time" v-model="formData.startTime" min="08:00" max="20:00"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50" />
+              <span class="self-center text-gray-500">à</span>
+              <input type="time" v-model="formData.endTime" min="08:00" max="20:00"
+                class="flex-1 px-3 py-2 border border-gray-200 rounded-lg text-sm transition duration-200 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:border-transparent bg-gray-50" />
+            </div>
+
+            <!-- Boutons d'action -->
+            <div class="flex items-center gap-2">
+              <button @click="addDateRange"
+                class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-200">
+                Ajouter période
+              </button>
+
+              <button @click="toggleAvailability" :class="[
+                'px-4 py-2 font-medium rounded-lg transition duration-200 min-w-[120px]',
+                isAvailable ?
+                  'bg-green-500 text-white hover:bg-green-600' :
+                  'bg-red-500 text-white hover:bg-red-600'
+              ]">
+                {{ isAvailable ? 'Disponible' : 'Occupé' }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Calendrier -->
+      <div class="p-6">
+        <div class="bg-white rounded-xl shadow-sm">
+          <FullCalendar ref="calendar" :options="calendarOptions" />
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
@@ -33,15 +60,21 @@ import frLocale from '@fullcalendar/core/locales/fr';
 import interactionPlugin from '@fullcalendar/interaction';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import FullCalendar from '@fullcalendar/vue3';
+import Sidebar from '../components/common/Sidebar.vue';
 
 export default {
   name: 'IntervenantView',
-  components: { FullCalendar },
+  components: {
+    FullCalendar,
+    Sidebar
+  },
   data() {
     return {
       formData: {
         startDate: '',
         endDate: '',
+        startTime: '08:00',
+        endTime: '20:00',
       },
       isAvailable: true,
       calendarOptions: {
@@ -59,6 +92,7 @@ export default {
           center: 'title',
           right: 'timeGridWeek,timeGridDay',
         },
+
         events: [],
         eventClick: this.handleEventClick,
         select: this.handleDateSelect,
@@ -67,6 +101,44 @@ export default {
           hour: 'numeric',
           minute: '2-digit',
           meridiem: false,
+        },
+        eventAllow: (dropInfo) => {
+          const droppedStart = dropInfo.start;
+          const droppedEnd = dropInfo.end;
+          const calendarApi = this.$refs.calendar.getApi();
+
+          const isOverlapping = calendarApi.getEvents().some((event) => {
+            const eventStart = event.start;
+            const eventEnd = event.end;
+
+            return (
+              (droppedStart < eventEnd && droppedEnd > eventStart) // Overlap condition
+            );
+          });
+
+          return !isOverlapping; // Allow only if no overlap
+        },
+        selectAllow: (selectInfo) => {
+          const selectedStart = selectInfo.start;
+          const selectedEnd = selectInfo.end;
+          const calendarApi = this.$refs.calendar.getApi();
+
+          // Check if the selected time overlaps with any existing event
+          const isOverlapping = calendarApi.getEvents().some((event) => {
+            const eventStart = event.start;
+            const eventEnd = event.end;
+
+            return (
+              (selectedStart < eventEnd && selectedEnd > eventStart) // Overlap condition
+            );
+          });
+
+          if (isOverlapping) {
+            alert('Ne peut créer un événement sur une période déjà remplis.');
+            return false;
+          }
+
+          return true; // Allow the selection if no overlaps
         },
         eventContent: (info) => ({
           html: `
@@ -80,10 +152,131 @@ export default {
       },
     }
   },
+  async mounted() {
+    await this.fetchAvailabilities();
+  },
   methods: {
+    async fetchAvailabilities() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
+
+      try {
+        const response = await fetch(`http://localhost:8080/availabilities`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
+
+        if (!response.ok) throw new Error("Erreur lors de la récupération des disponibilités.");
+
+        const availabilities = await response.json();
+        const formattedAvailabilities = availabilities
+          .filter((availability) => availability)
+          .map((availability) => ({
+            id: availability.id,
+            title: availability.is_available ? 'Disponible' : 'Occupé',
+            start: availability.start_datetime,
+            end: availability.end_datetime,
+            backgroundColor: availability.is_available ? '#4CAF50' : '#FF5733',
+          }));
+
+        this.calendarOptions.events = formattedAvailabilities;
+      } catch (error) {
+        console.error("Erreur lors de la récupération :", error);
+      }
+    },
+
     async toggleAvailability() {
       this.isAvailable = !this.isAvailable
     },
+
+    async addDateRange() {
+      if (!this.formData.startDate || !this.formData.endDate || !this.formData.startTime || !this.formData.endTime) {
+        alert('Veuillez remplir tous les champs');
+        return;
+      }
+
+      const calendarApi = this.$refs.calendar.getApi();
+
+      // Conversion des heures et minutes
+      const [startHours, startMinutes] = this.formData.startTime.split(':');
+      const [endHours, endMinutes] = this.formData.endTime.split(':');
+
+      // Création des dates de début et de fin
+      let currentDate = new Date(this.formData.startDate);
+      const endDate = new Date(this.formData.endDate);
+
+      // Vérification de la période
+      if (endDate < currentDate) {
+        alert("La date de fin doit être après la date de début");
+        return;
+      }
+
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
+
+      // Boucle pour créer un événement pour chaque jour
+      while (currentDate <= endDate) {
+        // Création des dates avec les heures pour le jour courant
+        const startDateTime = new Date(currentDate);
+        startDateTime.setHours(parseInt(startHours), parseInt(startMinutes), 0);
+
+        const endDateTime = new Date(currentDate);
+        endDateTime.setHours(parseInt(endHours), parseInt(endMinutes), 0);
+
+        // Création de l'événement dans le calendrier
+        const newEvent = calendarApi.addEvent({
+          title: this.isAvailable ? 'Disponible' : 'Occupé',
+          start: startDateTime,
+          end: endDateTime,
+          backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
+        });
+
+        try {
+          const response = await fetch('http://localhost:8080/availabilities', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+              'Authorization': `Bearer ${token}`,
+            },
+            body: JSON.stringify({
+              start_datetime: startDateTime,
+              end_datetime: endDateTime,
+              is_available: this.isAvailable,
+            }),
+          });
+
+          if (!response.ok) {
+            throw new Error("Erreur lors de l'enregistrement.");
+          }
+
+          const data = await response.json();
+          newEvent.setProp('id', data.id);
+
+        } catch (error) {
+          console.error(error);
+          newEvent.remove();
+          alert("Une erreur est survenue lors de l'enregistrement.");
+        }
+
+        // Passage au jour suivant
+        currentDate.setDate(currentDate.getDate() + 1);
+      }
+
+      // Reset form après création de tous les événements
+      this.formData.startDate = '';
+      this.formData.endDate = '';
+      this.formData.startTime = '08:00';
+      this.formData.endTime = '20:00';
+    },
+
     async handleDateSelect(selectInfo) {
       const title = this.isAvailable ? 'Disponible' : 'Occupé'
       const calendarApi = selectInfo.view.calendar
@@ -96,28 +289,36 @@ export default {
         allDay: selectInfo.allDay,
       })
 
+      const token = localStorage.getItem('token');
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
+
       try {
         const response = await fetch('http://localhost:8080/availabilities', {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
           body: JSON.stringify({
-            user_id: 1, // A remplacer par l'id du user co
             start_datetime: selectInfo.start,
             end_datetime: selectInfo.end,
             is_available: this.isAvailable,
           }),
-        })
+        });
 
-        if (!response.ok) throw new Error("Erreur lors de l'enregistrement.")
+        if (!response.ok) throw new Error("Erreur lors de l'enregistrement.");
 
-        const data = await response.json()
-        newEvent.setProp('id', data.id)
-        console.log('Disponibilité enregistrée avec succès', data)
+        const data = await response.json();
+        newEvent.setProp('id', data.id);
       } catch (error) {
-        console.error(error)
-        newEvent.remove()
+        console.error(error);
+        newEvent.remove();
       }
     },
+
     async handleEventClick(clickInfo) {
       if (confirm('Supprimer cet événement ?')) {
         try {
@@ -126,10 +327,14 @@ export default {
             return
           }
 
+          const token = localStorage.getItem('token');
           const response = await fetch(
             `http://localhost:8080/availabilities/${clickInfo.event.id}`,
             {
               method: 'DELETE',
+              headers: {
+                'Authorization': `Bearer ${token}`,
+              },
             }
           )
 
@@ -139,21 +344,25 @@ export default {
           }
 
           clickInfo.event.remove()
-          console.log('Disponibilité supprimée avec succès')
         } catch (error) {
           console.error(error)
           alert('Une erreur interne est survenue.')
         }
       }
     },
+
     async handleEventChange(changeInfo) {
       try {
         const event = changeInfo.event
         if (!event.id) return
 
+        const token = localStorage.getItem('token');
         const response = await fetch(`http://localhost:8080/availabilities/${event.id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
           body: JSON.stringify({
             start_datetime: event.start,
             end_datetime: event.end,
@@ -162,119 +371,42 @@ export default {
         })
 
         if (!response.ok) throw new Error('Erreur lors de la mise à jour.')
-        console.log('Disponibilité mise à jour avec succès')
       } catch (error) {
         console.error(error)
       }
     },
-    async addDateRange() {
-  if (!this.formData.startDate || !this.formData.endDate) {
-    alert('Veuillez sélectionner une date de début et de fin');
-    return;
+
+
   }
-
-  const calendarApi = this.$refs.calendar.getApi();
-  const startDate = new Date(this.formData.startDate);
-  startDate.setHours(8, 0, 0);
-
-  const endDate = new Date(this.formData.endDate);
-  endDate.setHours(20, 0, 0);
-
-  const newEvent = calendarApi.addEvent({
-    title: this.isAvailable ? 'Disponible' : 'Occupé',
-    start: startDate,
-    end: endDate,
-    backgroundColor: this.isAvailable ? '#4CAF50' : '#FF5733',
-  });
-
-  try {
-    const response = await fetch('http://localhost:8080/availabilities', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        user_id: 1, // Remplacez par l'ID réel de l'utilisateur connecté
-        start_datetime: startDate,
-        end_datetime: endDate,
-        is_available: this.isAvailable,
-      }),
-    });
-
-    if (!response.ok) throw new Error("Erreur lors de l'enregistrement.");
-
-    const data = await response.json();
-    newEvent.setProp('id', data.id);
-    console.log('Disponibilité enregistrée avec succès', data);
-  } catch (error) {
-    console.error(error);
-    newEvent.remove();
-    alert("Une erreur est survenue lors de l'enregistrement.");
-  }
-
-  this.formData.startDate = '';
-  this.formData.endDate = '';
-},
-  },
 }
 </script>
 
-<style scoped>
-.calendar-container {
-  width: 100%;
-  max-width: 1200px;
+<style>
+:deep(.fc) {
+  @apply font-sans;
 }
 
-.date-selection-form {
-  padding: 1rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+:deep(.fc-toolbar-title) {
+  @apply text-xl font-semibold text-gray-800;
 }
 
-.form-group {
-  margin-bottom: 1rem;
+:deep(.fc-button) {
+  @apply px-4 py-2 text-sm font-medium;
 }
 
-.form-group label {
-  display: block;
-  margin-bottom: 0.5rem;
+:deep(.fc-event) {
+  @apply rounded-lg border-none;
 }
 
-.form-control {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ddd;
-  border-radius: 4px;
+:deep(.fc-timegrid-event) {
+  @apply p-2;
 }
 
-.btn {
-  padding: 0.5rem 1rem;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
+:deep(.fc-timegrid-slot) {
+  @apply h-8;
 }
 
-.btn-primary {
-  background-color: #007bff;
-  color: white;
-}
-
-.mt-2 {
-  margin-top: 0.5rem;
-}
-
-.mb-4 {
-  margin-bottom: 1rem;
-}
-
-.ml-2 {
-  margin-left: 0.5rem;
-}
-
-.btn-success {
-  background-color: #4caf50;
-  color: white;
-}
-.btn-danger {
-  background-color: #ff5733;
-  color: white;
+:deep(.fc-button-primary) {
+  @apply bg-indigo-600 border-0 hover:bg-indigo-700 text-white !important;
 }
 </style>

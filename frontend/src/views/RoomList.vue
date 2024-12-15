@@ -23,12 +23,16 @@
               <thead>
                 <tr class="bg-gray-200">
                   <th class="px-4 py-2 text-left">Nom</th>
+                  <th class="px-4 py-2 text-left">Capacité</th>
+                  <th class="px-4 py-2 text-left">Disponible</th>
                   <th class="px-4 py-2 text-left">Actions</th>
                 </tr>
               </thead>
               <tbody>
                 <tr v-for="(room, index) in rooms" :key="index">
                   <td class="px-4 py-2">{{ room.name }}</td>
+                  <td class="px-4 py-2">{{ room.capacity }}</td>
+                  <td class="px-4 py-2">{{ room.is_available ? 'Oui' : 'Non' }}</td>
                 
               
                     <!-- Bouton Supprimer -->
