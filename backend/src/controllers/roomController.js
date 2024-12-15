@@ -115,8 +115,18 @@ export class RoomController {
     }
   }
 
+  async getAllRooms(req, res) {
+    const sequelizeService = await SequelizeService.get();
 
-  // Construire les routes
+    try {
+      const rooms = await sequelizeService.roomService.findRooms();
+      res.status(200).json(rooms);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des salles" });
+    }
+  }
+
   buildRouter() {
     const router = Router();
 
@@ -124,7 +134,7 @@ export class RoomController {
     router.get("/", this.getRooms.bind(this));
     router.get("/:id", this.getRoomById.bind(this));
     router.delete("/:id", this.deleteRoom.bind(this));
-
+    router.get("/", this.getAllRooms.bind(this));
     return router;
   }
 }

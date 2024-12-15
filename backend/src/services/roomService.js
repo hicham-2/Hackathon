@@ -52,6 +52,11 @@ this.sequelizeService = sequelizeService.sequelize;
     return rooms;
   }
 
+  async findRooms() {
+    const rooms = await this.model.findAll();
+    return rooms;
+  }
+  
   async updateRoomAvailability(roomId, availability) {
     const room = await this.model.update(
       { is_available: availability },
