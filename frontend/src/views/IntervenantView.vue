@@ -86,7 +86,6 @@
  import timeGridPlugin from '@fullcalendar/timegrid'
  import interactionPlugin from '@fullcalendar/interaction'
  import frLocale from '@fullcalendar/core/locales/fr'
- 
  import Sidebar from '../components/common/Sidebar.vue'
  
  export default {
@@ -105,7 +104,7 @@
       },
       isAvailable: true,
       calendarOptions: {
-        plugins: [timeGridPlugin, interactionPlugin, dayGridPlugin],
+        plugins: [timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
         locale: frLocale,
         selectable: true,
