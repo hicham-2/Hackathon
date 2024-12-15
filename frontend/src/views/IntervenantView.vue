@@ -53,17 +53,16 @@
       </div>
     </div>
   </div>
-</template>
-
-<script>
-
-import FullCalendar from '@fullcalendar/vue3' // Import the Vue 3 wrapper first
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import frLocale from '@fullcalendar/core/locales/fr'
-import Sidebar from '../components/common/Sidebar.vue'
-
-export default {
+ </template>
+ 
+ <script>
+ import FullCalendar from '@fullcalendar/vue3'
+ import timeGridPlugin from '@fullcalendar/timegrid'
+ import interactionPlugin from '@fullcalendar/interaction'
+ import frLocale from '@fullcalendar/core/locales/fr'
+ import Sidebar from '../components/common/Sidebar.vue'
+ 
+ export default {
   name: 'IntervenantView',
   components: {
     FullCalendar,
