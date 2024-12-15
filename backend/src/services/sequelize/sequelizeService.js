@@ -106,10 +106,11 @@ export class SequelizeService {
     });
   }
 
+
   async synchronize() {
-      // await this.sequelize.sync({ force: true });
-    await this.sequelize.sync({ alter: true });
-  }
+    // await this.sequelize.sync({ force: true });
+  await this.sequelize.sync({ alter: true });
+}
 
   static async get() {
     if (this.instance !== undefined) {
@@ -126,7 +127,7 @@ export class SequelizeService {
   static async openConnection() {
     try {
       return new Sequelize(process.env.BDD_ENDPOINT, {
-        logging: true, // Disable logging
+        logging: true, 
       });
     } catch (error) {
       console.error("Failed to establish a database connection:", error);

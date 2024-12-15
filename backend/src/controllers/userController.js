@@ -9,51 +9,47 @@ export class UserController {
   
   async createUser(req, res) {
     const { firstName, lastName, email, role, password } = req.body;
-    console.log(req.body);  
+    console.log(req.body);
+  
+    // Vérification des champs requis
+    if (!email || !firstName || !lastName || !role ) {
+      return res.status(400).json({ message: "Données manquantes" });
+    }
   
     const generatedToken = uid2(16);
     const generatedSalt = uid2(12);
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
   
     try {
-      if (email  && firstName && lastName && role) {  
-        const sequelizeService = await SequelizeService.get();
-        const userFoundByEmail = await sequelizeService.userService.findOne(email);
+      const sequelizeService = await SequelizeService.get();
   
-      //  const data = await loadFixtures();
-
-
-      if (email && password) {
-        const userFoundByEmail = await sequelizeService.userService.findOneBy({
-          email,
-        });
-
-        if (!userFoundByEmail) {
-          const user = await sequelizeService.userService.createUser({
-            firstName,
-            lastName,
-            email,
-            role,
-            token: generatedToken,
-            hash: generatedHash,
-            salt: generatedSalt,
-          });
+      // Vérifier si l'utilisateur existe déjà
+      const userFoundByEmail = await sequelizeService.userService.findOneBy({ email });
   
-          res.status(201).json(user);
-        } else {
-          res.status(409).json({ message: "Utilisateur déjà existant" });
-        }
-        } else {
-          res.status(409).json({ message: "Utilisateur déjà existant" });
-        }
-      } else {
-        res.status(400).json({ message: "Données manquantes" });
+      if (userFoundByEmail) {
+        // Si l'utilisateur existe déjà, retourner un message d'erreur
+        return res.status(409).json({ message: "Utilisateur déjà existant" });
       }
+  
+      // Créer un nouvel utilisateur
+      const user = await sequelizeService.userService.createUser({
+        firstName,
+        lastName,
+        email,
+        role,
+        token: generatedToken,
+        hash: generatedHash,
+        salt: generatedSalt,
+      });
+  
+      // Retourner la réponse avec l'utilisateur créé
+      res.status(201).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Error creating user" });
+      res.status(500).json({ error: "Erreur lors de la création de l'utilisateur" });
     }
   }
+  
 
 
   async login(req, res) {

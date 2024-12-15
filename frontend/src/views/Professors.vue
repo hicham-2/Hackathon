@@ -131,7 +131,7 @@ const createProfessor = async () => {
     });
     if (response.ok) {
       alert('Professeur ajouté avec succès !');
-      router.push('/professor');
+      router.push('/professors');
     } else {
       throw new Error('Erreur lors de la création du professeur');
     }
