@@ -3,13 +3,11 @@ import dotenv from "dotenv";
 import express from "express";
 import { AvailabilityController } from "./controllers/availabilityController.js";
 import { CourseController } from "./controllers/courseController.js";
-import { EmailController } from "./controllers/emailController.js";
 import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
 import { RoomController } from "./controllers/roomController.js";
-import { SectorController } from "./controllers/sectorController.js";
 import { UserController } from "./controllers/userController.js";
-import { canAccessDashboard } from "./middleware/is-admin.js";
-import { authMiddleware } from "./middleware/is-auth.js";
+import { PlanningController } from "./controllers/planningController.js";
+import { SectorController } from "./controllers/sectorController.js";
 import { SequelizeService } from "./services/sequelize/sequelizeService.js";
 
 
@@ -19,10 +17,11 @@ const app = express();
 const userController = new UserController();
 const roomController = new RoomController();
 const courseController = new CourseController();
-const emailController = new EmailController();
 const availabilityController = new AvailabilityController();
-const professorSpecialityController = new ProfessorSpecialityController();
 const sectorController = new SectorController();
+const professorSpecialityController = new ProfessorSpecialityController();
+const planningController = new PlanningController();
+
 
 // Middleware
 app.use(cors());
@@ -35,24 +34,12 @@ app.use('/ProfessorSpeciality', professorSpecialityController.buildRouter());
 app.use('/availabilities', availabilityController.buildRouter());
 app.use('/professor-speciality', professorSpecialityController.buildRouter());
 app.use('/sector', sectorController.buildRouter());
-app.get(
-  "/admin/dashboard",
-  authMiddleware, // Vérifie que le token est valide
-  canAccessDashboard, // Vérifie que l'utilisateur est admin
-  (req, res) => {
-    res
-      .status(200)
-      .json({ message: "Bienvenue sur le tableau de bord admin !" });
-  }
-);
+app.use('/planning', planningController.buildRouter());
+
 
 const PORT = process.env.PORT || 3000;
 
-app.get("/", (req, res) => {
-  res.send("Hello World!");
-});
 
-app.post("/send-email", emailController.sendEmail.bind(emailController));
 
 app.listen(PORT, async () => {
   const sequelizeService = await SequelizeService.get();
