@@ -11,10 +11,7 @@
         <input type="date" id="endDate" v-model="formData.endDate" class="form-control" />
       </div>
       <button @click="addDateRange" class="btn btn-primary mt-2">Ajouter au calendrier</button>
-      <!-- Nouveau bouton pour valider les disponibilités -->
-      <button @click="getSelectedSlots" class="btn btn-primary mt-2 ml-2">
-        Valider les disponibilités
-      </button>
+      <button @click="getSelectedSlots" class="btn btn-primary mt-2 ml-2">Valider les disponibilités</button>
       <button
         @click="toggleAvailability"
         :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']"
@@ -29,10 +26,10 @@
 </template>
 
 <script>
-import FullCalendar from '@fullcalendar/vue3'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import frLocale from '@fullcalendar/core/locales/fr'
+import FullCalendar from '@fullcalendar/vue3';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import interactionPlugin from '@fullcalendar/interaction';
+import frLocale from '@fullcalendar/core/locales/fr';
 
 export default {
   name: 'IntervenantView',
@@ -59,15 +56,10 @@ export default {
           center: 'title',
           right: 'timeGridWeek,timeGridDay',
         },
-        events: [],
+        events: [], // Les événements seront ajoutés dynamiquement
         eventClick: this.handleEventClick,
         select: this.handleDateSelect,
         eventChange: this.handleEventChange,
-        eventTimeFormat: {
-          hour: 'numeric',
-          minute: '2-digit',
-          meridiem: false,
-        },
         eventContent: (info) => ({
           html: `
             <div>
@@ -78,9 +70,49 @@ export default {
           `,
         }),
       },
-    }
+    };
+  },
+  async mounted() {
+    await this.fetchAvailabilities();
   },
   methods: {
+    async fetchAvailabilities() {
+  const professorId = 4; // À remplacer par une logique dynamique si besoin
+  const token = localStorage.getItem('token');
+
+  if (!token) {
+    alert("Utilisateur non trouvé. Veuillez vous connecter.");
+    return;
+  }
+
+  try {
+    const response = await fetch(`http://localhost:8080/availabilities/${professorId}`, {
+      headers: {
+        'Authorization': `Bearer ${token}`,
+      },
+    });
+
+    if (!response.ok) throw new Error("Erreur lors de la récupération des disponibilités.");
+
+    const availabilities = await response.json();
+    console.log("Réponse brute des disponibilités :", availabilities);
+
+    const formattedAvailabilities = availabilities
+      .filter((availability) => availability)
+      .map((availability) => ({
+        id: availability.id,
+        title: 'Disponible',
+        start: availability.start_datetime,
+        end: availability.end_datetime,
+        backgroundColor: availability.is_available ? '#4CAF50' : '#FF5733',
+      }));
+
+    this.calendarOptions.events = formattedAvailabilities;
+    console.log("Disponibilités chargées :", formattedAvailabilities);
+  } catch (error) {
+    console.error("Erreur attrapée lors de la récupération :", error);
+  }
+},
     async toggleAvailability() {
       this.isAvailable = !this.isAvailable
     },

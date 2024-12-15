@@ -56,11 +56,10 @@ export class AvailabilityController {
   
 
   async getAvailabilityById(req, res) {
-    const { id } = req.params;
     const sequelizeService = await SequelizeService.get();
-
+    const user_id = req.user?.id;
     try {
-      const availability = await sequelizeService.findOneBy({id});
+      const availability = await sequelizeService.availabilityService.findByProfessor(user_id);
 
       if (!availability) {
         return res.status(404).json({ message: "Disponibilité introuvable." });
@@ -115,7 +114,7 @@ export class AvailabilityController {
 
     router.post("/", authMiddleware, this.createAvailability.bind(this));
     router.get("/professor/:professorId", this.getAvailabilitiesByProfessor.bind(this));
-    router.get("/:id", this.getAvailabilityById.bind(this));
+    router.get("/:id", authMiddleware, this.getAvailabilityById.bind(this));
     router.put("/:id", this.updateAvailability.bind(this));
     router.delete("/:id", this.deleteAvailability.bind(this));
 
