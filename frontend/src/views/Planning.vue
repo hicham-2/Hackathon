@@ -102,7 +102,7 @@ export default {
         selectable: true,
         editable: true,
         selectMirror: true,
-        weekends: false,
+        weekends: true,
         slotMinTime: '08:00:00',
         slotMaxTime: '20:00:00',
         headerToolbar: {
