@@ -18,7 +18,7 @@
               <select 
                 v-model="filters.sector"
                 class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                @change="applyFilters"
+                @change="changeSector"
               >
                 <option value="">Toutes les filières</option>
                 <option v-for="sector in sectors" :key="sector.id" :value="sector.id">
@@ -33,7 +33,7 @@
               <select 
                 v-model="filters.classe"
                 class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                @change="applyFilters"
+                @change="fetchAvailabilities"
               >
                 <option value="">Toutes les classes</option>
                 <option v-for="classe in classes" :key="classe.id" :value="classe.id">
@@ -151,7 +151,6 @@ export default {
       }
 
       try {
-        const classId = 1;
 
         const response = await fetch(`http://localhost:8080/planning/generate`, {
           method: 'POST',
@@ -160,7 +159,7 @@ export default {
             'Authorization': `Bearer ${token}`,
           },
           body: JSON.stringify({
-            classId: classId,
+            classId: this.filters.classe,
           }),
         });
 
