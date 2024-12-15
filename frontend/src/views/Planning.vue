@@ -9,12 +9,12 @@
             <h1 class="text-2xl font-semibold text-gray-800">Planning</h1>
             <div class="flex space-x-4"></div>
           </div>
- 
+
           <!-- Inputs pour les dates et heures -->
-          
+
         </div>
       </div>
- 
+
       <!-- Calendrier -->
       <div class="p-6">
         <div class="bg-white rounded-xl shadow-sm">
@@ -23,64 +23,103 @@
       </div>
     </div>
   </div>
- </template>
- 
- <script>
- import frLocale from '@fullcalendar/core/locales/fr';
- import interactionPlugin from '@fullcalendar/interaction';
- import timeGridPlugin from '@fullcalendar/timegrid';
- import FullCalendar from '@fullcalendar/vue3';
- import Sidebar from '../components/common/Sidebar.vue';
- 
- export default {
-   name: 'Planning',
-   components: {
-     Sidebar,
-     FullCalendar,
-     
-     
-   },
-   data() {
-     return {
-       calendarOptions: {
-         plugins: [timeGridPlugin, interactionPlugin ],
-         initialView: 'timeGridWeek',
-         locale: frLocale,
-         selectable: true,
-         editable: true,
-         selectMirror: true,
-         weekends: false,
-         slotMinTime: '08:00:00',
-         slotMaxTime: '20:00:00',
-         headerToolbar: {
-           left: 'prev,next today',
-           center: 'title',
-           right: 'timeGridDay,timeGridWeek'
-         },
-         eventClick: this.handleEventClick,
-         select: this.handleDateSelect,
-         eventChange: this.handleEventChange,
-         events: [],
-         eventTimeFormat: {
-           hour: 'numeric',
-           minute: '2-digit',
-           meridiem: false,
-         },
-         eventContent: (info) => {
-           return {
-             html: `
+</template>
+
+<script>
+import frLocale from '@fullcalendar/core/locales/fr';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import FullCalendar from '@fullcalendar/vue3';
+import Sidebar from '../components/common/Sidebar.vue';
+
+export default {
+  name: 'Planning',
+  components: {
+    Sidebar,
+    FullCalendar,
+
+
+  },
+  data() {
+    return {
+      calendarOptions: {
+        plugins: [timeGridPlugin, interactionPlugin],
+        initialView: 'timeGridWeek',
+        locale: frLocale,
+        selectable: true,
+        editable: true,
+        selectMirror: true,
+        weekends: true,
+        slotMinTime: '08:00:00',
+        slotMaxTime: '20:00:00',
+        headerToolbar: {
+          left: 'prev,next today',
+          center: 'title',
+          right: 'timeGridDay,timeGridWeek'
+        },
+        eventClick: this.handleEventClick,
+        select: this.handleDateSelect,
+        eventChange: this.handleEventChange,
+        events: [
+        ],
+        eventTimeFormat: {
+          hour: 'numeric',
+          minute: '2-digit',
+          meridiem: false,
+        },
+        eventContent: (info) => {
+          return {
+            html: `
                <div>
                  <strong>${info.event.title}</strong>
                  <br>
                  ${info.timeText}
                </div>
              `,
-           };
-         },
-       },
-     };
-   },
-  
- };
- </script>
- 
+          };
+        },
+      },
+    };
+  },
+
+
+
+  async mounted() {
+    await this.fetchAvailabilities();
+  },
+  methods: {
+    async fetchAvailabilities() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
+
+      try {
+        const classId = 2;
+
+        const response = await fetch(`http://localhost:8080/planning/generate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            classId: classId,
+          }),
+        });
+
+        if (!response.ok) throw new Error("Erreur lors de la récupération du planning.");
+
+        const availabilities = await response.json();
+
+        this.calendarOptions.events = availabilities;
+      } catch (error) {
+        console.error("Erreur lors de la récupération :", error);
+      }
+    },
+  }
+
+};
+</script>

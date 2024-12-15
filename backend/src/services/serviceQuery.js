@@ -6,4 +6,12 @@ export class GenericQuery {
 
     return slot;
   }
+
+  async findAllBy(object) {
+    const slots = await this.model.findAll({
+      where: object,
+    });
+
+    return slots;
+  }
 }

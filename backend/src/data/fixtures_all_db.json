@@ -94,7 +94,9 @@
     "data": {
       "id": 1,
       "name": "Docker",
-      "duration": 20
+      "duration": 20,
+      "sector_id": 1
+
     }
   },
   {
@@ -102,7 +104,27 @@
     "data": {
       "id": 2,
       "name": "JS",
-      "duration": 20
+      "duration": 20,
+      "sector_id": 1
+    }
+  },
+  {
+    "model": "4",
+    "data": {
+      "id": 3,
+      "name": "marketing",
+      "duration": 20,
+      "sector_id": 2
+
+    }
+  },
+  {
+    "model": "4",
+    "data": {
+      "id": 4,
+      "name": "automatisation",
+      "duration": 20,
+      "sector_id": 2
     }
   },
   {
@@ -111,6 +133,22 @@
       "id": 1,
       "user_id": 2,
       "course_id": 2
+    }
+  },
+  {
+    "model": "5",
+    "data": {
+      "id": 2,
+      "user_id": 3,
+      "course_id": 3
+    }
+  },
+  {
+    "model": "5",
+    "data": {
+      "id": 3,
+      "user_id": 3,
+      "course_id": 1
     }
   },
   {
