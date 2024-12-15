@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen">
     <Sidebar />
-    <div class="flex-1 ml-64">
+    <div class="flex-1 mx-24">
       <!-- Header avec les contrôles -->
       <div class="bg-white shadow-sm p-6">
         <div class="flex flex-col gap-4">
@@ -137,7 +137,14 @@ export default {
     await this.fetchRooms();
     await this.fetchProfessors();
     await this.fetchSectors();
+    await this.fetchAvailabilities();
   },
+
+
+
+
+
+
   methods: {
     async fetchRooms() {
       try {
@@ -170,6 +177,37 @@ export default {
         this.sectors = sectors;
       } catch (error) {
         console.error('Erreur lors de la récupération des sectors:', error);
+      }
+    },
+    async fetchAvailabilities() {
+      const token = localStorage.getItem('token');
+
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
+
+      try {
+        const classId = 2;
+
+        const response = await fetch(`http://localhost:8080/planning/generate`, {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+            'Authorization': `Bearer ${token}`,
+          },
+          body: JSON.stringify({
+            classId: classId,
+          }),
+        });
+
+        if (!response.ok) throw new Error("Erreur lors de la récupération du planning.");
+
+        const availabilities = await response.json();
+
+        this.calendarOptions.events = availabilities;
+      } catch (error) {
+        console.error("Erreur lors de la récupération :", error);
       }
     },
     handleDateSelect(selectInfo) {
