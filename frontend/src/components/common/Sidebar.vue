@@ -18,8 +18,11 @@
         <router-link to="/course" class="sidebar-link">Tous les Cours</router-link>
       </li>
       <li>
-        <router-link to="/classe" class="sidebar-link">Liste des Classes</router-link>
+        <router-link to="/sector" class="sidebar-link">Toutes les filières</router-link>
       </li>
+      <!-- <li>
+        <router-link to="/classe" class="sidebar-link">Liste des Classes</router-link>
+      </li> -->
      
     </ul>
   </aside>

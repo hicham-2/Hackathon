@@ -9,6 +9,15 @@ const courseModel = {
     type: DataTypes.INTEGER,
     allowNull: false,
   },
+
+  sector_id: {
+    type: DataTypes.INTEGER,
+    allowNull: false,
+    references: {
+      model: "Sectors",
+      key: "id",
+    },
+  },
 };
 
 export default courseModel;

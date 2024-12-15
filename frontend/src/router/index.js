@@ -9,6 +9,8 @@ import Professor from '../views/Professors.vue';
 import ProfessorsList from '../views/ProfessorsList.vue';
 import Room from '../views/Room.vue';
 import RoomList from '../views/RoomList.vue';
+import Sector from '../views/Sector.vue';
+import SectorList from '../views/SectorList.vue';
 
 
 const routes = [
@@ -77,6 +79,21 @@ const routes = [
     path: '/createCourse',
     name: 'Course',
     component: Course,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+
+  {
+    path: '/sector',
+    name: 'Sectors',
+    component: SectorList,
+    // meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+  {
+    path: '/createSector',
+    name: 'Sector',
+    component: Sector
     // meta: { requiresAuth: true ,  roles: ['admin'] },
   },
 

@@ -6,6 +6,7 @@ import { CourseController } from "./controllers/courseController.js";
 import { EmailController } from "./controllers/emailController.js";
 import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
 import { RoomController } from "./controllers/roomController.js";
+import { SectorController } from "./controllers/sectorController.js";
 import { UserController } from "./controllers/userController.js";
 import { canAccessDashboard } from "./middleware/is-admin.js";
 import { authMiddleware } from "./middleware/is-auth.js";
@@ -19,6 +20,7 @@ const courseController = new CourseController();
 const emailController = new EmailController();
 const availabilityController = new AvailabilityController();
 const professorSpecialityController = new ProfessorSpecialityController();
+const sectorController = new SectorController();
 
 // Middleware
 app.use(cors());
@@ -29,6 +31,7 @@ app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
 app.use('/ProfessorSpeciality', professorSpecialityController.buildRouter());
 app.use('/availabilities', availabilityController.buildRouter());
+app.use('/sector', sectorController.buildRouter());
 app.get(
   "/admin/dashboard",
   authMiddleware, // Vérifie que le token est valide

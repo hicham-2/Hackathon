@@ -46,39 +46,23 @@
             />
           </div>
 
-           <!-- Dropdown pour les spécialités -->
-           <div class="mb-6">
-            <label for="speciality_id" class="block text-gray-700 text-sm font-bold mb-2">Spécialités</label>
-            <select
-              id="speciality_id"
-              v-model="professor.speciality_id"
-              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              multiple
-              required
-            >
-              <option disabled value="">Sélectionnez ses spécialités</option>
-              <option v-for="speciality in specialities" :key="speciality.id" :value="speciality.id">
-                {{ speciality.name }}
-              </option>
-            </select>
-          </div>
-
-
-          <!-- Dropdown pour les salles -->
+         
           <div class="mb-6">
-            <label for="room_id" class="block text-gray-700 text-sm font-bold mb-2">Salle</label>
-            <select
-              id="room_id"
-              v-model="professor.room_id"
-              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
-              required
-            >
-              <option disabled value="">Sélectionnez une salle</option>
-              <option v-for="room in rooms" :key="room.id" :value="room.id">
-                {{ room.name }}
-              </option>
-            </select>
+            <label for="course_id" class="block text-gray-700 text-sm font-bold mb-2">Cours</label>
+            <div class="grid grid-cols-4 gap-4">
+              <div v-for="course in courses" :key="course.id" class="flex items-center">
+                <input
+                  type="checkbox"
+                  :value="course.id"
+                  v-model="professor.courses"
+                  class="form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+                />
+                <span class="ml-2 text-gray-700">{{ course.name }}</span>
+              </div>
+            </div>
           </div>
+
+     
 
           <div class="flex justify-between">
             <button
@@ -96,98 +80,70 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
+import { useRouter } from 'vue-router';
 import Sidebar from '../components/common/Sidebar.vue';
 
-const route = useRoute();
 const router = useRouter();
 
-// Représente l'objet du professeur
 const professor = ref({
   id: '',
-  lastname: '',
-  firstname: '',
+  lastName: '',
+  firstName: '',
   email: '',
   role: 'professor',
-  speciality_id: [], 
-  room_id: '', 
+  courses: [],
 });
 
-
+const sectors = ref([]);
+const courses = ref([]);
 const rooms = ref([]);
 
-const courses = ref([]); 
+const loading = ref(false);
+const errorMessage = ref('');
 
-// Fonction pour récupérer les spécialités des prof
-const fetchProfessorSpecialities = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/speciality'); 
-    if (response.ok) {
-      const data = await response.json();
-      specialities.value = data;
-    } else {
-      console.error('Erreur lors de la récupération des spécialités');
-    }
-  } catch (error) {
-    console.error('Erreur lors de la récupération des spécialités :', error);
-  }
-};
 
 
 const fetchCourses = async () => {
   try {
-    const response = await fetch('http://localhost:8080/course'); 
+    const response = await fetch('http://localhost:8080/course');
     if (response.ok) {
-      const data = await response.json();
-      courses.value = data;
+      courses.value = await response.json();
     } else {
-      console.error('Erreur lors de la récupération des spécialités');
+      throw new Error('Erreur lors de la récupération des cours');
     }
   } catch (error) {
-    console.error('Erreur lors de la récupération des spécialités :', error);
+    errorMessage.value = error.message;
+    console.error(error);
   }
 };
 
-const fetchRooms = async () => {
-  try {
-    const response = await fetch('http://localhost:8080/room'); 
-    if (response.ok) {
-      const data = await response.json();
-      rooms.value = data;
-    } else {
-      console.error('Erreur lors de la récupération des salles');
-    }
-  } catch (error) {
-    console.error('Erreur lors de la récupération des salles :', error);
-  }
-};
 
 
 const createProfessor = async () => {
+  loading.value = true;
   try {
-    const response = await fetch(`http://localhost:8080/user/create`, {
+    const response = await fetch('http://localhost:8080/user/create', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(professor.value),
     });
-
     if (response.ok) {
       alert('Professeur ajouté avec succès !');
-      router.push('/professor'); 
+      router.push('/professor');
     } else {
-      console.error('Erreur lors de la création du professeur');
+      throw new Error('Erreur lors de la création du professeur');
     }
   } catch (error) {
-    console.error('Erreur lors de la création du professeur :', error);
+    errorMessage.value = error.message;
+    console.error(error);
+  } finally {
+    loading.value = false;
   }
 };
 
-
-
 onMounted(() => {
-  fetchRooms();
   fetchCourses();
 });
 </script>
