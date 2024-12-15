@@ -86,7 +86,7 @@
  import timeGridPlugin from '@fullcalendar/timegrid'
  import interactionPlugin from '@fullcalendar/interaction'
  import frLocale from '@fullcalendar/core/locales/fr'
- import dayGridPlugin from '@fullcalendar/daygrid'
+ 
  import Sidebar from '../components/common/Sidebar.vue'
  
  export default {
