@@ -202,6 +202,7 @@ export class PlanningGenerator {
                   backgroundColor: "blue",
                 });
 
+                title: `Cour de ${course.name} (à confirmer) avec ${professorMaybeAvailable.firstName} ${professorMaybeAvailable.lastName}`,
                 this.addEventToRoom(
                   course.id,
                   availableProfessor.id,

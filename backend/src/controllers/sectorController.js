@@ -101,6 +101,18 @@ export class SectorController {
     }
   }
 
+  async getAllClasses(req, res) {
+    const sequelizeService = await SequelizeService.get();
+
+    try {
+      const classes = await sequelizeService.classeService.findAll();
+      res.status(200).json(classes);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des classes." });
+    }
+  }
+
   buildRouter() {
     const router = Router();
 
@@ -109,6 +121,7 @@ export class SectorController {
     router.get("/", this.getSectorBy.bind(this)); 
     router.put("/:id", this.updateSector.bind(this));
     router.delete("/:id", this.deleteSector.bind(this));
+    router.get("/classes", this.getAllClasses.bind(this));
 
     return router;
   }

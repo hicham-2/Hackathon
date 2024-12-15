@@ -8,4 +8,8 @@ this.sequelizeService = sequelizeService.sequelize;
 
     this.model = this.sequelizeService.define("Classes", classeModel);
   }
+  async findAll() {
+    const classes = await this.model.findAll();
+    return classes;
+  }
 }
