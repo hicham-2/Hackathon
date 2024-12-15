@@ -6,12 +6,9 @@
     <!-- Contenu principal -->
     <div class="planning-page overflow-y-auto flex-1 p-8 bg-gray-100">
       <h1 class="text-3xl font-bold mb-4">Planning</h1>
-     
+
       <div class="calendar-container">
-        <FullCalendar
-          ref="calendar"
-          :options="calendarOptions"
-        />
+        <FullCalendar ref="calendar" :options="calendarOptions" />
       </div>
     </div>
   </div>
@@ -29,13 +26,13 @@ export default {
   components: {
     Sidebar,
     FullCalendar,
-    
-    
+
+
   },
   data() {
     return {
       calendarOptions: {
-        plugins: [timeGridPlugin, interactionPlugin ],
+        plugins: [timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
         locale: frLocale,
         selectable: true,
@@ -58,6 +55,7 @@ export default {
           minute: '2-digit',
           meridiem: false,
         },
+      
         eventContent: (info) => {
           return {
             html: `
