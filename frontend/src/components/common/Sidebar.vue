@@ -1,6 +1,6 @@
 <template>
   <aside class="w-64 bg-gray-800 text-white h-screen sticky top-0 ">
-    <div class=" flex flex-col p-6">
+    <div class="flex flex-col p-6">
 
       <div class="mb-8">
 
@@ -8,28 +8,31 @@
           class="text-2xl text-center font-extrabold bg-clip-text text-transparent bg-[linear-gradient(to_right,theme(colors.indigo.400),theme(colors.indigo.100),theme(colors.sky.400),theme(colors.fuchsia.400),theme(colors.sky.400),theme(colors.indigo.100),theme(colors.indigo.400))] bg-[length:200%_auto] animate-gradient">
           Dashboard</h2>
       </div>
-      <ul class="space-y-4">
+      
+    <ul class="space-y-4">
 
-        <li v-if:="authStore.isAdmin">
-          <router-link to="/planning" class="sidebar-link">Planning</router-link>
-        </li>
-
-        <li v-if:="!authStore.isAdmin">
-          <router-link to="/intervenant" class="sidebar-link">Mon Planning</router-link>
-        </li>
-
-        <li v-if:="authStore.isAdmin">
-          <router-link to="/professors" class="sidebar-link">Professeurs</router-link>
-        </li>
-        <li v-if:="authStore.isAdmin">
-          <router-link to="/rooms" class="sidebar-link">Salles</router-link>
-        </li>
-
-        <li v-if:="authStore.isAdmin">
-          <router-link to="/speciality" class="sidebar-link">Spécialités</router-link>
-        </li>
-        <button @click="logout" class="bg-gray-700 text-white px-4 py-2 rounded-md">Deconnexion</button>
-      </ul>
+      <li v-if:="authStore.isAdmin">
+        <router-link to="/planning" class="sidebar-link">Planning général</router-link>
+      </li>
+      <li v-if:="authStore.isAdmin">
+        <router-link to="/professors" class="sidebar-link">Tous les Professeurs</router-link>
+      </li>
+      <li v-if:="authStore.isAdmin">
+        <router-link to="/room" class="sidebar-link">Liste des Salles</router-link>
+      </li>
+      <li v-if:="authStore.isAdmin">
+        <router-link to="/sector" class="sidebar-link">Toutes les filières</router-link>
+      </li>
+      <li v-if:="authStore.isAdmin">
+        <router-link to="/course" class="sidebar-link">Tous les Cours</router-link>
+      </li>
+      
+      <!-- <li>
+        <router-link to="/classe" class="sidebar-link">Liste des Classes</router-link>
+      </li> -->
+     
+      <button @click="logout" class="bg-gray-700 text-white px-4 py-2 rounded-md">Deconnexion</button>
+    </ul>
     </div>
   </aside>
 </template>
@@ -37,8 +40,8 @@
 <script setup>
 // Pas de script nécessaire pour ce composant
 
-import { useRouter } from 'vue-router';
 import { useAuthStore } from '@/stores/modules/auth';
+import { useRouter } from 'vue-router';
 
 const authStore = useAuthStore();
 const router = useRouter();

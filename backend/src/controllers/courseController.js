@@ -3,7 +3,7 @@ import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 
 export class CourseController {
   async createCourse(req, res) {
-    const { name, duration } = req.body;
+    const { name, duration, sector_id } = req.body;
     const sequelizeService = await SequelizeService.get();
 
     try {
@@ -14,6 +14,7 @@ export class CourseController {
           const course = await sequelizeService.courseService.createCourse({
             name,
             duration,
+            sector_id
           });
 
           res.status(201).json(course);

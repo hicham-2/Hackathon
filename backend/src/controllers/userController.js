@@ -1,50 +1,53 @@
 import base64 from "crypto-js/enc-base64.js";
 import SHA256 from "crypto-js/sha256.js";
 import { Router } from "express";
-import jwt from "jsonwebtoken"; // Import du module jsonwebtoken
 import uid2 from "uid2";
-import { SequelizeService } from "../services/sequelize/sequelizeService.js";
-import { canAccessDashboard } from "../middleware/is-admin.js";
 import { authMiddleware } from "../middleware/is-auth.js";
+import { SequelizeService } from "../services/sequelize/sequelizeService.js";
 
 export class UserController {
+  
   async createUser(req, res) {
-    const { role, email, password } = req.body;
+    const { firstName, lastName, email, role, password } = req.body;
+    console.log(req.body);
+  
+    // Vérification des champs requis
+    if (!email || !firstName || !lastName || !role ) {
+      return res.status(400).json({ message: "Données manquantes" });
+    }
+  
     const generatedToken = uid2(16);
     const generatedSalt = uid2(12);
     const generatedHash = SHA256(password + generatedSalt).toString(base64);
-
+  
     try {
-      //  const data = await loadFixtures();
-
       const sequelizeService = await SequelizeService.get();
-
-      if (email && password) {
-        const userFoundByEmail = await sequelizeService.userService.findOneBy({
-          email,
-        });
-
-        if (!userFoundByEmail) {
-          const user = await sequelizeService.userService.createUser({
-            role,
-            email,
-            token: generatedToken,
-            hash: generatedHash,
-            salt: generatedSalt,
-          });
-
-          res.status(201).json(user);
-        } else {
-          res.status(409).json({ message: "Utilisateur déjà existant" });
-        }
-      } else {
-        res.status(400).json({ message: "Données manquantes" });
+  
+      const userFoundByEmail = await sequelizeService.userService.findOneBy({ email });
+  
+      if (userFoundByEmail) {
+        return res.status(409).json({ message: "Utilisateur déjà existant" });
       }
+  
+      const user = await sequelizeService.userService.createUser({
+        firstName,
+        lastName,
+        email,
+        role,
+        token: generatedToken,
+        hash: generatedHash,
+        salt: generatedSalt,
+      });
+  
+      // Retourner la réponse avec l'utilisateur créé
+      res.status(201).json(user);
     } catch (error) {
       console.error(error);
-      res.status(500).json({ error: "Error creating user" });
+      res.status(500).json({ error: "Erreur lors de la création de l'utilisateur" });
     }
   }
+  
+
 
   async login(req, res) {
     const sequelizeService = await SequelizeService.get();
@@ -87,16 +90,120 @@ export class UserController {
     }
   }
 
-  async checkRole(req, res) {
-    return res.status(200).json({ role: req.user.role });
+  async getAllProfessors(req, res) {
+    try {
+      const sequelizeService = await SequelizeService.get();
+      const professors = await sequelizeService.userService.findAll({
+        where: { role: "professor" },  
+      });
+  
+      if (professors.length > 0) {
+        res.status(200).json(professors);
+      } else {
+        res.status(404).json({ message: "Aucun professeur trouvé" });
+      }
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ message: "Erreur lors de la récupération des professeurs" });
+    }
   }
+
+  async getProfessors(req, res) {
+    const sequelizeService = await SequelizeService.get();
+
+    try {
+      const professors = await sequelizeService.userService.findUsersByRole("professor");
+      res.status(200).json(professors);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des professeurs" });
+    }
+  }
+
+  async deleteProfessor(req, res) {
+    const { id } = req.params;
+
+    if (!id) {
+      console.log("Aucun ID fourni dans la requête.");
+      return res.status(400).json({ message: "L'identifiant de l'utilisateur est requis." });
+    }
+
+    const sequelizeService = await SequelizeService.get();
+
+    try {
+      console.log(`Recherche de l'utilisateur avec l'ID : ${id}`);
+      const userFound = await sequelizeService.userService.findUserById(id);
+
+
+      if (!userFound) {
+        console.log("Utilisateur introuvable.");
+        return res.status(404).json({ message: "L'utilisateur n'existe pas." });
+      }
+
+      console.log(`Utilisateur trouvé : ${JSON.stringify(userFound)}`);
+
+      if (userFound.role === "professor") {
+        const result = await sequelizeService.userService.deleteUser(id);
+
+        if (result === 1) {
+          console.log("Utilisateur supprimé avec succès.");
+          res.status(200).json({ message: "L'utilisateur a été supprimé." });
+        } else {
+          console.log("Erreur inconnue lors de la suppression.");
+          res.status(500).json({ message: "Erreur inconnue lors de la suppression." });
+        }
+      }
+    }
+    catch (error) {
+      console.error("Erreur lors de la suppression de l'utilisateur :", error);
+      res.status(500).json({ error: "Erreur interne du serveur." });
+    }
+  }
+
+
+async getProfessorById(req, res) {
+  const { id } = req.params;
+
+  if (!id) {
+    console.log("Aucun ID fourni dans la requête.");
+    return res.status(400).json({ message: "L'identifiant de l'utilisateur est requis." });
+  }
+
+  const sequelizeService = await SequelizeService.get();
+
+  try {
+    console.log(`Recherche de l'utilisateur avec l'ID : ${id}`);
+    const userFound = await sequelizeService.userService.findUserById(id);
+
+    if (!userFound) {
+      console.log("Utilisateur introuvable.");
+      return res.status(404).json({ message: "L'utilisateur n'existe pas." });
+    }
+
+    console.log(`Utilisateur trouvé : ${JSON.stringify(userFound)}`);
+    res.status(200).json(userFound);
+  } catch (error) {
+    console.error("Erreur lors de la récupération de l'utilisateur :", error);
+    res.status(500).json({ error: "Erreur interne du serveur." });
+  }
+}
+
+async checkRole(req, res) {
+  return res.status(200).json({ role: req.user.role });
+}
+
 
   buildRouter() {
     const router = Router();
+    
 
     router.post("/login", this.login.bind(this));
     router.post("/create", this.createUser.bind(this));
+    router.get("/professors", this.getAllProfessors.bind(this));
+    router.delete("/professors/:id", this.deleteProfessor.bind(this));
+    router.get("/professors/:id", this.getProfessorById.bind(this));
     router.get("/checkRole", authMiddleware, this.checkRole.bind(this));
+    router.get("/professors", this.getProfessors.bind(this));
     return router;
   }
 }

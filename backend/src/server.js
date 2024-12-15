@@ -1,15 +1,14 @@
 import cors from "cors";
 import dotenv from "dotenv";
 import express from "express";
+import { AvailabilityController } from "./controllers/availabilityController.js";
 import { CourseController } from "./controllers/courseController.js";
-import { EmailController } from "./controllers/emailController.js";
+import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
 import { RoomController } from "./controllers/roomController.js";
 import { UserController } from "./controllers/userController.js";
 import { PlanningController } from "./controllers/planningController.js";
-import { AvailabilityController } from "./controllers/availabilityController.js";
 import { SectorController } from "./controllers/sectorController.js";
 import { SequelizeService } from "./services/sequelize/sequelizeService.js";
-import { ProfessorSpecialityController } from "./controllers/professorSpecialityController.js";
 
 
 dotenv.config();
@@ -31,6 +30,7 @@ app.use(express.json());
 app.use('/user', userController.buildRouter());
 app.use('/room', roomController.buildRouter());
 app.use('/course', courseController.buildRouter());
+app.use('/ProfessorSpeciality', professorSpecialityController.buildRouter());
 app.use('/availabilities', availabilityController.buildRouter());
 app.use('/professor-speciality', professorSpecialityController.buildRouter());
 app.use('/sector', sectorController.buildRouter());

@@ -8,31 +8,61 @@
       <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Ajouter un Professeur</h2>
 
-        <!-- Formulaire de détails du professeur -->
-        <form @submit.prevent="updateProfessor">
+        <!-- Formulaire de mise à jour des détails du professeur -->
+        <form @submit.prevent="createProfessor">
           <div class="mb-6">
-            <label for="professorName" class="block text-gray-700 text-sm font-bold mb-2">Nom du Professeur</label>
+            <label for="lastname" class="block text-gray-700 text-sm font-bold mb-2">Nom</label>
             <input
-              id="professorName"
-              v-model="professor.name"
+              id="lastname"
+              v-model="professor.lastName"
               class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               type="text"
-              placeholder="Nom du professeur"
+              placeholder="Nom"
               required
             />
           </div>
 
           <div class="mb-6">
-            <label for="professorSpeciality" class="block text-gray-700 text-sm font-bold mb-2">Spécialité</label>
+            <label for="firstname" class="block text-gray-700 text-sm font-bold mb-2">Prénom</label>
             <input
-              id="professorSpeciality"
-              v-model="professor.speciality"
+              id="firstname"
+              v-model="professor.firstName"
               class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
               type="text"
-              placeholder="Spécialité du professeur"
+              placeholder="Prénom"
               required
             />
           </div>
+
+          <div class="mb-6">
+            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+            <input
+              id="email"
+              v-model="professor.email"
+              class="appearance-none border-2 border-gray-300 rounded-lg w-full py-3 px-4 text-gray-700 focus:outline-none focus:border-blue-500 focus:ring-2 focus:ring-blue-200 transition-all"
+              type="email"
+              placeholder="Adresse email"
+              required
+            />
+          </div>
+
+         
+          <div class="mb-6">
+            <label for="course_id" class="block text-gray-700 text-sm font-bold mb-2">Cours</label>
+            <div class="grid grid-cols-4 gap-4">
+              <div v-for="course in courses" :key="course.id" class="flex items-center">
+                <input
+                  type="checkbox"
+                  :value="course.id"
+                  v-model="professor.courses"
+                  class="form-checkbox h-5 w-5 text-blue-600 transition duration-150 ease-in-out"
+                />
+                <span class="ml-2 text-gray-700">{{ course.name }}</span>
+              </div>
+            </div>
+          </div>
+
+     
 
           <div class="flex justify-between">
             <button
@@ -50,59 +80,70 @@
 
 <script setup>
 import { onMounted, ref } from 'vue';
-import { useRoute, useRouter } from 'vue-router';
-import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le chemin est correct
+import { useRouter } from 'vue-router';
+import Sidebar from '../components/common/Sidebar.vue';
 
-const route = useRoute();
 const router = useRouter();
 
-// Représente l'objet du professeur
 const professor = ref({
   id: '',
-  name: '',
-  speciality: '',
+  lastName: '',
+  firstName: '',
+  email: '',
+  role: 'professor',
+  courses: [],
 });
 
-// Fonction pour récupérer les détails du professeur depuis le backend
-const fetchProfessorDetails = async () => {
-  const professorId = route.params.id;  // Utilisation de l'ID du professeur dans l'URL
+const sectors = ref([]);
+const courses = ref([]);
+const rooms = ref([]);
+
+const loading = ref(false);
+const errorMessage = ref('');
+
+
+
+const fetchCourses = async () => {
   try {
-    const response = await fetch(`http://localhost:8080/professors/${professorId}`);
+    const response = await fetch('http://localhost:8080/course');
     if (response.ok) {
-      const data = await response.json();
-      professor.value = data;  
+      courses.value = await response.json();
     } else {
-      console.error("Erreur de récupération des données");
+      throw new Error('Erreur lors de la récupération des cours');
     }
   } catch (error) {
-    console.error("Erreur lors de la récupération des données :", error);
+    errorMessage.value = error.message;
+    console.error(error);
   }
 };
 
-// Fonction pour mettre à jour le professeur
-const updateProfessor = async () => {
+
+
+const createProfessor = async () => {
+  loading.value = true;
   try {
-    const response = await fetch(`http://localhost:8080/professors/${professor.value.id}`, {
-      method: 'PUT',
+    const response = await fetch('http://localhost:8080/user/create', {
+      method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify(professor.value),
     });
-
     if (response.ok) {
-      alert("Professeur mis à jour avec succès !");
-      router.push('/professors');  // Rediriger vers la liste des professeurs après la mise à jour
+      alert('Professeur ajouté avec succès !');
+      router.push('/professors');
     } else {
-      console.error("Erreur de mise à jour");
+      throw new Error('Erreur lors de la création du professeur');
     }
   } catch (error) {
-    console.error("Erreur lors de la mise à jour :", error);
+    errorMessage.value = error.message;
+    console.error(error);
+  } finally {
+    loading.value = false;
   }
 };
 
-// Charger les données du professeur au montage du composant
 onMounted(() => {
-  fetchProfessorDetails();
+  fetchCourses();
 });
 </script>

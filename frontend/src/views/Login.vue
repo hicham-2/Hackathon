@@ -55,9 +55,9 @@
 </template>
 
 <script setup>
+import { useAuthStore } from '@/stores/modules/auth';
 import { ref } from 'vue';
 import { useRouter } from 'vue-router';
-import { useAuthStore } from '@/stores/modules/auth';
 
 const authStore = useAuthStore();
 const router = useRouter();
@@ -92,7 +92,7 @@ const login = async () => {
       return
     }
 
-    router.push("/dashboard"); // Redirect on successful login
+    router.push("/planning"); // Redirect on successful login
   } catch (error) {
     errorMessage.value = "Login failed. Please check your credentials.";
     console.error(error);

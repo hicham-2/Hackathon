@@ -1,22 +1,32 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import GlobalCalendarView from '../views/GlobalCalendarView.vue'
-import IntervenantView from '../views/IntervenantView.vue'
-import Planning from '../views/Planning.vue'
-import Professors from '../views/Professors.vue'
-import Rooms from '../views/Room.vue'
-import Speciality from '../views/Speciality.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Classe from '../views/Classe.vue';
+import Course from '../views/Course.vue';
+import CourseList from '../views/CourseList.vue';
+import Dashboard from '../views/Dashboard.vue';
+import GlobalCalendarView from '../views/GlobalCalendarView.vue';
+import IntervenantView from '../views/IntervenantView.vue';
+import Login from '../views/Login.vue';
+import Planning from '../views/Planning.vue';
+import Professor from '../views/Professors.vue';
+import ProfessorsList from '../views/ProfessorsList.vue';
+import Room from '../views/Room.vue';
+import RoomList from '../views/RoomList.vue';
+import Sector from '../views/Sector.vue';
+import SectorList from '../views/SectorList.vue';
+
+
 
 const routes = [
   {
     path: '/',
     name: 'Login',
-    component: () => import('../views/Login.vue'),
+    component: Login
   },
   {
     path: '/dashboard',
     name: 'Dashboard',
-    component: () => import('../views/Dashboard.vue'),
-    meta: { requiresAuth: true, roles: ['admin', 'professor'] },
+    component: Dashboard,
+    meta: { requiresAuth: true, roles: ['admin'] },
   },
   {
     path: '/planning',
@@ -25,23 +35,71 @@ const routes = [
     meta: { requiresAuth: true, roles: ['admin'] },
   },
   {
-    path: '/rooms',
+    path: '/room',
     name: 'Rooms',
-    component: Rooms,
+    component: RoomList,
     meta: { requiresAuth: true, roles: ['admin'] },
+  },
+  {
+    path: '/createRoom',
+    name: 'Room',
+    component: Room,
+    // meta: { requiresAuth: true,  roles: ['admin']  },
+  },
+  {
+    path: '/createProfessor',
+    name: 'Professor',
+    component: Professor,
+     meta: { requiresAuth: true, roles: ['admin'] }, 
   },
   {
     path: '/professors',
     name: 'Professors',
-    component: Professors,
-    meta: { requiresAuth: true, roles: ['admin'] },
+    component: ProfessorsList,
+     meta: { requiresAuth: true, roles: ['admin'] }, 
+    
   },
   {
-    path: '/speciality',
-    name: 'Speciality',
-    component: Speciality,
-    meta: { requiresAuth: true, roles: ['admin'] },
+    path: '/createClasse',
+    name: 'Classe',
+    component: Classe,
+     meta: { requiresAuth: true ,  roles: ['admin'] },
   },
+
+  {
+    path: '/course',
+    name: 'Courses',
+    component: CourseList,
+     meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+  {
+    path: '/createCourse',
+    name: 'Course',
+    component: Course,
+     meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+
+  {
+    path: '/sector',
+    name: 'Sectors',
+    component: SectorList,
+     meta: { requiresAuth: true ,  roles: ['admin'] },
+  },
+
+  {
+    path: '/createSector',
+    name: 'Sector',
+    component: Sector,
+    meta: { requiresAuth: true, roles: ['admin', 'professor'] },
+  },
+  // {
+  //   path: '/speciality',
+  //   name: 'Speciality',
+  //   component: Speciality,
+  //   meta: { requiresAuth: true, roles: ['admin'] },
+  // },
 
   {
     path: '/intervenant',
@@ -53,7 +111,7 @@ const routes = [
     path: '/global-calendar',
     name: 'global-calendar',
     component: GlobalCalendarView,
-    meta: { requiresAuth: true, roles: ['admin'] },
+    meta: { requiresAuth: true, roles: ['admin', 'professor'] },
   },
 ]
 const router = createRouter({

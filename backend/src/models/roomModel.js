@@ -7,10 +7,12 @@ const roomModel = {
   },
   capacity: {
     type: DataTypes.INTEGER,
+    allowNull: false,
   },
   is_available: {
     type: DataTypes.BOOLEAN,
     allowNull: false,
+    defaultValue: false,
   },
 };
 

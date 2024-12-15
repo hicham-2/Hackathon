@@ -56,11 +56,11 @@
 </template>
 
 <script>
-import FullCalendar from '@fullcalendar/vue3'
-import timeGridPlugin from '@fullcalendar/timegrid'
-import interactionPlugin from '@fullcalendar/interaction'
-import frLocale from '@fullcalendar/core/locales/fr'
-import Sidebar from '../components/common/Sidebar.vue'
+import frLocale from '@fullcalendar/core/locales/fr';
+import interactionPlugin from '@fullcalendar/interaction';
+import timeGridPlugin from '@fullcalendar/timegrid';
+import FullCalendar from '@fullcalendar/vue3';
+import Sidebar from '../components/common/Sidebar.vue';
 
 export default {
   name: 'IntervenantView',
