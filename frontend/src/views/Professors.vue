@@ -46,10 +46,10 @@
             />
           </div>
 
-         
+          <!-- Section pour ajouter les cours -->
           <div class="mb-6">
-            <label for="course_id" class="block text-gray-700 text-sm font-bold mb-2">Cours</label>
-            <div class="grid grid-cols-4 gap-4">
+            <label for="courses" class="block text-gray-700 text-sm font-bold mb-2">Cours</label>
+            <div class="grid grid-cols-2 gap-4">
               <div v-for="course in courses" :key="course.id" class="flex items-center">
                 <input
                   type="checkbox"
@@ -61,8 +61,6 @@
               </div>
             </div>
           </div>
-
-     
 
           <div class="flex justify-between">
             <button
@@ -94,15 +92,12 @@ const professor = ref({
   courses: [],
 });
 
-const sectors = ref([]);
 const courses = ref([]);
-const rooms = ref([]);
 
 const loading = ref(false);
 const errorMessage = ref('');
 
-
-
+// Fonction pour récupérer les cours depuis l'API
 const fetchCourses = async () => {
   try {
     const response = await fetch('http://localhost:8080/course');
@@ -117,8 +112,7 @@ const fetchCourses = async () => {
   }
 };
 
-
-
+// Fonction pour créer un professeur
 const createProfessor = async () => {
   loading.value = true;
   try {
@@ -143,7 +137,12 @@ const createProfessor = async () => {
   }
 };
 
+// Récupérer les cours lorsque le composant est monté
 onMounted(() => {
   fetchCourses();
 });
 </script>
+
+<style scoped>
+/* Ajouter des styles spécifiques si nécessaire */
+</style>
