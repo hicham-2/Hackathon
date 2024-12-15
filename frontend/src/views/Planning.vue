@@ -1,7 +1,7 @@
 <template>
   <div class="flex min-h-screen">
     <Sidebar />
-    <div class="flex-1 ml-64">
+    <div class="flex-1 mx-20">
       <!-- Header avec les contrôles -->
       <div class="bg-white shadow-sm p-6">
         <div class="flex flex-col gap-4">
