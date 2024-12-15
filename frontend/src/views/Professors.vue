@@ -4,7 +4,7 @@
     <Sidebar />
 
     <!-- Contenu principal -->
-    <div class="w-full flex justify-center items-center flex-1 p-8">
+    <div class="w-full flex overflow-y-auto justify-center items-center flex-1 p-8">
       <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
         <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Ajouter un Professeur</h2>
 
@@ -67,7 +67,7 @@ const professor = ref({
 const fetchProfessorDetails = async () => {
   const professorId = route.params.id;  // Utilisation de l'ID du professeur dans l'URL
   try {
-    const response = await fetch(`/api/professors/${professorId}`);
+    const response = await fetch(`http://localhost:8080/professors/${professorId}`);
     if (response.ok) {
       const data = await response.json();
       professor.value = data;  
@@ -82,7 +82,7 @@ const fetchProfessorDetails = async () => {
 // Fonction pour mettre à jour le professeur
 const updateProfessor = async () => {
   try {
-    const response = await fetch(`/api/professors/${professor.value.id}`, {
+    const response = await fetch(`http://localhost:8080/professors/${professor.value.id}`, {
       method: 'PUT',
       headers: {
         'Content-Type': 'application/json',

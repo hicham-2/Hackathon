@@ -1,27 +1,29 @@
 <template>
-  <div class="calendar-container">
-    <!-- Formulaire de sélection de dates -->
-    <div class="date-selection-form mb-4">
-      <div class="form-group">
-        <label for="startDate">Date de début:</label>
-        <input type="date" id="startDate" v-model="formData.startDate" class="form-control" />
-      </div>
-      <div class="form-group">
-        <label for="endDate">Date de fin:</label>
-        <input type="date" id="endDate" v-model="formData.endDate" class="form-control" />
-      </div>
-      <button @click="addDateRange" class="btn btn-primary mt-2">Ajouter au calendrier</button>
-      <button @click="getSelectedSlots" class="btn btn-primary mt-2 ml-2">Valider les disponibilités</button>
-      <button
-        @click="toggleAvailability"
-        :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']"
-      >
-        {{ isAvailable ? 'Disponible' : 'Occupé' }}
-      </button>
-    </div>
 
-    <!-- Calendrier -->
-    <FullCalendar ref="calendar" :options="calendarOptions" />
+<div class="flex ">
+  <Sidebar />
+    <div class="calendar-container overflow-y-auto flex-1 p-8 ">
+
+      <!-- Formulaire de sélection de dates -->
+      <div class="date-selection-form mb-4">
+        <div class="form-group">
+          <label for="startDate">Date de début:</label>
+          <input type="date" id="startDate" v-model="formData.startDate" class="form-control" />
+        </div>
+        <div class="form-group">
+          <label for="endDate">Date de fin:</label>
+          <input type="date" id="endDate" v-model="formData.endDate" class="form-control" />
+        </div>
+        <button @click="addDateRange" class="btn btn-primary mt-2">Ajouter au calendrier</button>
+        <button @click="getSelectedSlots" class="btn btn-primary mt-2 ml-2">Valider les disponibilités</button>
+        <button @click="toggleAvailability" :class="['btn', 'mt-2', 'ml-2', isAvailable ? 'btn-success' : 'btn-danger']">
+          {{ isAvailable ? 'Disponible' : 'Occupé' }}
+        </button>
+      </div>
+      
+      <!-- Calendrier -->
+      <FullCalendar ref="calendar" :options="calendarOptions" />
+    </div>
   </div>
 </template>
 
@@ -30,10 +32,11 @@ import FullCalendar from '@fullcalendar/vue3';
 import timeGridPlugin from '@fullcalendar/timegrid';
 import interactionPlugin from '@fullcalendar/interaction';
 import frLocale from '@fullcalendar/core/locales/fr';
+import Sidebar from '@/components/common/Sidebar.vue';
 
 export default {
   name: 'IntervenantView',
-  components: { FullCalendar },
+  components: { FullCalendar, Sidebar },
   data() {
     return {
       formData: {
@@ -77,42 +80,42 @@ export default {
   },
   methods: {
     async fetchAvailabilities() {
-  const professorId = 4; // À remplacer par une logique dynamique si besoin
-  const token = localStorage.getItem('token');
+      const professorId = 4; // À remplacer par une logique dynamique si besoin
+      const token = localStorage.getItem('token');
 
-  if (!token) {
-    alert("Utilisateur non trouvé. Veuillez vous connecter.");
-    return;
-  }
+      if (!token) {
+        alert("Utilisateur non trouvé. Veuillez vous connecter.");
+        return;
+      }
 
-  try {
-    const response = await fetch(`http://localhost:8080/availabilities/${professorId}`, {
-      headers: {
-        'Authorization': `Bearer ${token}`,
-      },
-    });
+      try {
+        const response = await fetch(`http://localhost:8080/availabilities/${professorId}`, {
+          headers: {
+            'Authorization': `Bearer ${token}`,
+          },
+        });
 
-    if (!response.ok) throw new Error("Erreur lors de la récupération des disponibilités.");
+        if (!response.ok) throw new Error("Erreur lors de la récupération des disponibilités.");
 
-    const availabilities = await response.json();
-    console.log("Réponse brute des disponibilités :", availabilities);
+        const availabilities = await response.json();
+        console.log("Réponse brute des disponibilités :", availabilities);
 
-    const formattedAvailabilities = availabilities
-      .filter((availability) => availability)
-      .map((availability) => ({
-        id: availability.id,
-        title: 'Disponible',
-        start: availability.start_datetime,
-        end: availability.end_datetime,
-        backgroundColor: availability.is_available ? '#4CAF50' : '#FF5733',
-      }));
+        const formattedAvailabilities = availabilities
+          .filter((availability) => availability)
+          .map((availability) => ({
+            id: availability.id,
+            title: availability.is_available ? 'Disponible' : 'Occupé',
+            start: availability.start_datetime,
+            end: availability.end_datetime,
+            backgroundColor: availability.is_available ? '#4CAF50' : '#FF5733',
+          }));
 
-    this.calendarOptions.events = formattedAvailabilities;
-    console.log("Disponibilités chargées :", formattedAvailabilities);
-  } catch (error) {
-    console.error("Erreur attrapée lors de la récupération :", error);
-  }
-},
+        this.calendarOptions.events = formattedAvailabilities;
+        console.log("Disponibilités chargées :", formattedAvailabilities);
+      } catch (error) {
+        console.error("Erreur attrapée lors de la récupération :", error);
+      }
+    },
     async toggleAvailability() {
       this.isAvailable = !this.isAvailable
     },
@@ -329,6 +332,7 @@ export default {
   background-color: #4caf50;
   color: white;
 }
+
 .btn-danger {
   background-color: #ff5733;
   color: white;

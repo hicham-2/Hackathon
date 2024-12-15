@@ -34,7 +34,7 @@ const routes = [
     path: '/professors',
     name: 'Professors',
     component: Professors,
-    meta: { requiresAuth: true, roles: ['admin']},
+    meta: { requiresAuth: true, roles: ['admin'] },
   },
   {
     path: '/speciality',

@@ -3,6 +3,8 @@
     "model": "0",
     "data": {
       "email": "admin.1@mail.com",
+      "firstName": "admin1",
+      "lastName": "admin1",
       "role": "admin",
       "token": "IqQ5q8sc0-6rIvpt",
       "hash": "E/W8FtvXIfQwRd5scdFbnnwIaJna4AmdKvYV9b6+i2Y=",
@@ -13,10 +15,24 @@
     "model": "0",
     "data": {
       "email": "professeur.1@mail.com",
+      "firstName": "proffeseur1",
+      "lastName": "proffeseur1",
       "role": "professor",
       "token": "gBFv_UAKVYPSGwdz",
       "hash": "l6XWUG186KAFxwQi/bnL4DJ2x2Z9VmgAu9gJk3WwiZM=",
       "salt": "G7dbBzPjIGV0"
+    }
+  },
+  {
+    "model": "0",
+    "data": {
+      "email": "professeur.2@mail.com",
+      "role": "professor",
+      "firstName": "professeur2",
+      "lastName": "professeur2",
+      "token": "AdHqAmWV26ghUBYD",
+      "hash": "eiPVZHf4RR6xWgp443dMV+7DlcYK7F9H8lzA+bgguSo=",
+      "salt": "aI4-EHrs6Pvq"
     }
   },
   {
@@ -95,6 +111,132 @@
       "id": 1,
       "user_id": 2,
       "course_id": 2
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2024-12-18T08:00:00",
+      "end_datetime": "2024-12-18T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2024-12-19T08:00:00",
+      "end_datetime": "2024-12-19T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2024-12-23T08:00:00",
+      "end_datetime": "2024-12-23T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2024-12-26T08:00:00",
+      "end_datetime": "2024-12-26T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2024-12-30T08:00:00",
+      "end_datetime": "2024-12-30T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2025-01-02T08:00:00",
+      "end_datetime": "2025-01-02T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2025-01-06T08:00:00",
+      "end_datetime": "2025-01-06T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2025-01-09T08:00:00",
+      "end_datetime": "2025-01-09T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2025-01-13T08:00:00",
+      "end_datetime": "2025-01-13T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2025-01-16T08:00:00",
+      "end_datetime": "2025-01-16T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2025-01-20T08:00:00",
+      "end_datetime": "2025-01-20T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2025-01-23T08:00:00",
+      "end_datetime": "2025-01-23T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 2,
+      "start_datetime": "2025-01-27T08:00:00",
+      "end_datetime": "2025-01-27T18:00:00",
+      "is_available": false
+    }
+  },
+  {
+    "model": "7",
+    "data": {
+      "user_id": 3,
+      "start_datetime": "2025-01-30T08:00:00",
+      "end_datetime": "2025-01-30T18:00:00",
+      "is_available": false
     }
   }
 ]

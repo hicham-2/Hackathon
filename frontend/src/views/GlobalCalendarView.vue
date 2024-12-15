@@ -1,5 +1,5 @@
 <template>
-  <div class="calendar-container">
+  <div class="calendar-container overflow-y-auto">
     <FullCalendar
       ref="calendar"
       :options="calendarOptions"

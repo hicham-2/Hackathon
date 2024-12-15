@@ -4,7 +4,7 @@
     <Sidebar />
 
     <!-- Contenu principal -->
-    <div class="planning-page flex-1 p-8 bg-gray-100">
+    <div class="planning-page overflow-y-auto flex-1 p-8 bg-gray-100">
       <h1 class="text-3xl font-bold mb-4">Planning</h1>
      
       <div class="calendar-container">

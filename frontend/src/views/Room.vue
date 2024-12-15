@@ -4,7 +4,7 @@
       <Sidebar />
   
       <!-- Contenu principal -->
-      <div class="w-full flex justify-center items-center flex-1 p-8">
+      <div class="w-full flex justify-center items-center flex-1 p-8 overflow-y-auto">
         <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
           <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Détails de la Salle</h2>
   
@@ -100,7 +100,7 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
   const fetchRoomDetails = async () => {
     const roomId = route.params.id;  // Utilisation de l'ID de la chambre dans l'URL
     try {
-      const response = await fetch(`/api/rooms/${roomId}`);
+      const response = await fetch(`http://localhost:8080/rooms/${roomId}`);
       if (response.ok) {
         const data = await response.json();
         room.value = data;  
@@ -115,7 +115,7 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
   // Fonction pour mettre à jour la salle
   const updateRoom = async () => {
     try {
-      const response = await fetch(`/api/rooms/${room.value.id}`, {
+      const response = await fetch(`http://localhost:8080/rooms/${room.value.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
@@ -139,10 +139,10 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
     const confirmDelete = confirm("Êtes-vous sûr de vouloir supprimer cette chambre ?");
     if (confirmDelete) {
       try {
-        const response = await fetch(`/api/rooms/${room.value.id}`, {
+        const response = await fetch(`http://localhost:8080/rooms/${room.value.id}`, {
           method: 'DELETE',
         });
-  
+   
         if (response.ok) {
           alert("Chambre supprimée avec succès !");
           router.push('/rooms');  // Rediriger après la suppression

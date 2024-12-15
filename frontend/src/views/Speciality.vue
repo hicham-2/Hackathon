@@ -4,7 +4,7 @@
       <Sidebar />
   
       <!-- Contenu principal -->
-      <div class="w-full flex justify-center items-center flex-1 p-8">
+      <div class="w-full flex justify-center items-center flex-1 p-8 overflow-y-auto">
         <div class="w-full max-w-4xl bg-white shadow-lg rounded-lg p-8">
           <h2 class="text-3xl font-bold text-center text-gray-800 mb-8">Détails de la Spécialité</h2>
   
@@ -54,7 +54,7 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
   const fetchSpecialityDetails = async () => {
     const specialityId = route.params.id;  // Utilisation de l'ID de la spécialité dans l'URL
     try {
-      const response = await fetch(`/api/specialities/${specialityId}`);
+      const response = await fetch(`http://localhost:8080/specialities/${specialityId}`);
       if (response.ok) {
         const data = await response.json();
         speciality.value = data;  
@@ -69,7 +69,7 @@ import Sidebar from '../components/common/Sidebar.vue'; // Assurez-vous que le c
   // Fonction pour mettre à jour la spécialité
   const updateSpeciality = async () => {
     try {
-      const response = await fetch(`/api/specialities/${speciality.value.id}`, {
+      const response = await fetch(`api/api/specialities/${speciality.value.id}`, {
         method: 'PUT',
         headers: {
           'Content-Type': 'application/json',
