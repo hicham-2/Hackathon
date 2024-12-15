@@ -31,7 +31,7 @@
                 class="px-4 py-2 bg-indigo-600 text-white font-medium rounded-lg hover:bg-indigo-700 transition duration-200">
                 Ajouter période
               </button>
-            
+
               <button @click="toggleAvailability" :class="[
                 'px-4 py-2 font-medium rounded-lg transition duration-200 min-w-[120px]',
                 isAvailable ?
@@ -53,16 +53,16 @@
       </div>
     </div>
   </div>
- </template>
- 
- <script>
- import FullCalendar from '@fullcalendar/vue3'
- import timeGridPlugin from '@fullcalendar/timegrid'
- import interactionPlugin from '@fullcalendar/interaction'
- import frLocale from '@fullcalendar/core/locales/fr'
- import Sidebar from '../components/common/Sidebar.vue'
- 
- export default {
+</template>
+
+<script>
+import FullCalendar from '@fullcalendar/vue3'
+import timeGridPlugin from '@fullcalendar/timegrid'
+import interactionPlugin from '@fullcalendar/interaction'
+import frLocale from '@fullcalendar/core/locales/fr'
+import Sidebar from '../components/common/Sidebar.vue'
+
+export default {
   name: 'IntervenantView',
   components: {
     FullCalendar,
@@ -92,7 +92,7 @@
           center: 'title',
           right: 'timeGridWeek,timeGridDay',
         },
- 
+
         events: [],
         eventClick: this.handleEventClick,
         select: this.handleDateSelect,
@@ -101,6 +101,44 @@
           hour: 'numeric',
           minute: '2-digit',
           meridiem: false,
+        },
+        eventAllow: (dropInfo) => {
+          const droppedStart = dropInfo.start;
+          const droppedEnd = dropInfo.end;
+          const calendarApi = this.$refs.calendar.getApi();
+
+          const isOverlapping = calendarApi.getEvents().some((event) => {
+            const eventStart = event.start;
+            const eventEnd = event.end;
+
+            return (
+              (droppedStart < eventEnd && droppedEnd > eventStart) // Overlap condition
+            );
+          });
+
+          return !isOverlapping; // Allow only if no overlap
+        },
+        selectAllow: (selectInfo) => {
+          const selectedStart = selectInfo.start;
+          const selectedEnd = selectInfo.end;
+          const calendarApi = this.$refs.calendar.getApi();
+
+          // Check if the selected time overlaps with any existing event
+          const isOverlapping = calendarApi.getEvents().some((event) => {
+            const eventStart = event.start;
+            const eventEnd = event.end;
+
+            return (
+              (selectedStart < eventEnd && selectedEnd > eventStart) // Overlap condition
+            );
+          });
+
+          if (isOverlapping) {
+            alert('Ne peut créer un événement sur une période déjà remplis.');
+            return false;
+          }
+
+          return true; // Allow the selection if no overlaps
         },
         eventContent: (info) => ({
           html: `
@@ -140,7 +178,7 @@
           .filter((availability) => availability)
           .map((availability) => ({
             id: availability.id,
-            title: availability.is_available ? 'Disponible' :'Occupé',
+            title: availability.is_available ? 'Disponible' : 'Occupé',
             start: availability.start_datetime,
             end: availability.end_datetime,
             backgroundColor: availability.is_available ? '#4CAF50' : '#FF5733',
@@ -338,7 +376,7 @@
       }
     },
 
-  
+
   }
 }
 </script>
