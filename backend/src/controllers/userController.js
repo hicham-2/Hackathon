@@ -91,12 +91,25 @@ export class UserController {
     return res.status(200).json({ role: req.user.role });
   }
 
+  async getProfessors(req, res) {
+    const sequelizeService = await SequelizeService.get();
+
+    try {
+      const professors = await sequelizeService.userService.findUsersByRole("professor");
+      res.status(200).json(professors);
+    } catch (error) {
+      console.error(error);
+      res.status(500).json({ error: "Erreur lors de la récupération des professeurs" });
+    }
+  }
+
   buildRouter() {
     const router = Router();
 
     router.post("/login", this.login.bind(this));
     router.post("/create", this.createUser.bind(this));
     router.get("/checkRole", authMiddleware, this.checkRole.bind(this));
+    router.get("/professors", this.getProfessors.bind(this));
     return router;
   }
 }

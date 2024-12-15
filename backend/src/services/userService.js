@@ -23,4 +23,13 @@ export class UserService extends GenericQuery {
 
     return slot;
   }
+
+  async findUsersByRole(role) {
+    const users = await this.model.findAll({
+      where: { role },
+    });
+  
+    return users;
+  }
+  
 }
