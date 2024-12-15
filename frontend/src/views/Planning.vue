@@ -159,7 +159,7 @@ export default {
     },
     async fetchProfessors() {
       try {
-        const response = await fetch('http://localhost:8080/user/professors');
+        const response = await fetch('http://localhost:8080/user/professor');
         if (!response.ok) throw new Error('Erreur lors de la récupération des professeurs');
 
         const professors = await response.json();

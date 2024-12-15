@@ -203,7 +203,7 @@ async checkRole(req, res) {
     router.delete("/professors/:id", this.deleteProfessor.bind(this));
     router.get("/professors/:id", this.getProfessorById.bind(this));
     router.get("/checkRole", authMiddleware, this.checkRole.bind(this));
-    router.get("/professors", this.getProfessors.bind(this));
+    router.get("/professor", this.getProfessors.bind(this));
     return router;
   }
 }
