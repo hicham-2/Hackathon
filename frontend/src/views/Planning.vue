@@ -11,7 +11,7 @@
           </div>
 
           <!-- Filtres -->
-          <div class="grid grid-cols-3 gap-4 mt-4">
+          <div class="grid grid-cols-2 gap-4 mt-4">
             <!-- Filtre Filières -->
             <div>
               <label class="block text-sm font-medium text-gray-700 mb-1">Filière</label>
@@ -27,32 +27,17 @@
               </select>
             </div>
 
-            <!-- Filtre Professeurs -->
+            <!-- Filtre Classes -->
             <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Professeur</label>
+              <label class="block text-sm font-medium text-gray-700 mb-1">Classes</label>
               <select 
-                v-model="filters.professor"
+                v-model="filters.classe"
                 class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
                 @change="applyFilters"
               >
-                <option value="">Tous les professeurs</option>
-                <option v-for="professor in professors" :key="professor.id" :value="professor.id">
-                  {{ professor.firstName }} {{ professor.lastName }}
-                </option>
-              </select>
-            </div>
-
-            <!-- Filtre Salles -->
-            <div>
-              <label class="block text-sm font-medium text-gray-700 mb-1">Salle</label>
-              <select 
-                v-model="filters.room"
-                class="w-full px-3 py-2 border border-gray-200 rounded-lg text-sm focus:outline-none focus:ring-2 focus:ring-indigo-500"
-                @change="applyFilters"
-              >
-                <option value="">Toutes les salles</option>
-                <option v-for="room in rooms" :key="room.id" :value="room.id">
-                  {{ room.name }}
+                <option value="">Toutes les classes</option>
+                <option v-for="classe in classes" :key="classe.id" :value="classe.id">
+                  {{ classe.name }}
                 </option>
               </select>
             </div>
@@ -87,14 +72,10 @@ export default {
     return {
       filters: {
         sector: '',
-        professor: '',
-        class: '',
-        room: ''
+        classe: '',
       },
       sectors: [],
-      professors: [],
       classes: [],
-      rooms: [],
       calendarOptions: {
         plugins: [timeGridPlugin, interactionPlugin],
         initialView: 'timeGridWeek',
@@ -134,40 +115,11 @@ export default {
     };
   },
   async mounted() {
-    await this.fetchRooms();
-    await this.fetchProfessors();
     await this.fetchSectors();
-    await this.fetchAvailabilities();
+    await this.fetchClasses();
   },
 
-
-
-
-
-
   methods: {
-    async fetchRooms() {
-      try {
-        const response = await fetch('http://localhost:8080/room');
-        if (!response.ok) throw new Error('Erreur lors de la récupération des salles');
-
-        const rooms = await response.json();
-        this.rooms = rooms; 
-      } catch (error) {
-        console.error('Erreur lors de la récupération des salles:', error);
-      }
-    },
-    async fetchProfessors() {
-      try {
-        const response = await fetch('http://localhost:8080/user/professor');
-        if (!response.ok) throw new Error('Erreur lors de la récupération des professeurs');
-
-        const professors = await response.json();
-        this.professors = professors;
-      } catch (error) {
-        console.error('Erreur lors de la récupération des professeurs:', error);
-      }
-    },
     async fetchSectors() {
       try {
         const response = await fetch('http://localhost:8080/sector');
@@ -177,6 +129,17 @@ export default {
         this.sectors = sectors;
       } catch (error) {
         console.error('Erreur lors de la récupération des sectors:', error);
+      }
+    },
+    async fetchClasses() {
+      try {
+        const response = await fetch('http://localhost:8080/sector/classes');
+        if (!response.ok) throw new Error('Erreur lors de la récupération des classes');
+
+        const classes = await response.json();
+        this.classes = classes;
+      } catch (error) {
+        console.error('Erreur lors de la récupération des classes:', error);
       }
     },
     async fetchAvailabilities() {
@@ -233,39 +196,6 @@ export default {
       // Mettre à jour les données du calendrier en fonction des modifications
       console.log("Événement modifié:", changeInfo.event);
     },
-
-    async applyFilters() {
-      const token = localStorage.getItem('token');
-      try {
-        let url = 'http://localhost:8080/availabilities/filter?';
-        if (this.filters.sector) url += `sector=${this.filters.sector}&`;
-        if (this.filters.professor) url += `professor=${this.filters.professor}&`;
-        if (this.filters.class) url += `class=${this.filters.class}&`;
-        if (this.filters.room) url += `room=${this.filters.room}&`;
-
-        const response = await fetch(url, {
-          headers: { 'Authorization': `Bearer ${token}` }
-        });
-
-        if (!response.ok) throw new Error('Erreur lors de la filtration');
-
-        const filteredEvents = await response.json();
-        const calendarApi = this.$refs.calendar.getApi();
-        calendarApi.removeAllEvents();
-
-        filteredEvents.forEach(event => {
-          calendarApi.addEvent({
-            id: event.id,
-            title: event.is_available ? 'Disponible' : 'Occupé',
-            start: event.start_datetime,
-            end: event.end_datetime,
-            backgroundColor: event.is_available ? '#4CAF50' : '#FF5733',
-          });
-        });
-      } catch (error) {
-        console.error('Erreur lors de l\'application des filtres:', error);
-      }
-    }
   }
 };
 </script>

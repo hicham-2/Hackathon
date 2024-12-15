@@ -107,7 +107,7 @@ export class PlanningGenerator {
               // Deduct 3 hours from remaining hours
             } else if (professorMaybeAvailable && remainingHours > 0) {
               planning.push({
-                title: `Cour de ${course.name} (à comfirmer) avec ${professorMaybeAvailable.firstName} ${professorMaybeAvailable.lastName}`,
+                title: `Cour de ${course.name} (à confirmer) avec ${professorMaybeAvailable.firstName} ${professorMaybeAvailable.lastName}`,
                 start: sessionStart.toISOString(),
                 end: new Date(
                   sessionStart.getTime() + 3 * 60 * 60 * 1000
