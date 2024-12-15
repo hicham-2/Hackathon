@@ -10,10 +10,14 @@ export class PlanningController {
   async generatePlanning(req, res) {
     const sequelizeService = await SequelizeService.get();
 
-    const classId = 1;
+    
+    if (!req.body?.classId) {
+      res.status(400).json({ error: "Class ID is required" });
+      return;
+    }
     const courses = await sequelizeService.courseService.model.findOne({
       where: {
-        id: classId,
+        id: req.body.classId,
       },
       include: {
         model: sequelizeService.sectorService.model,

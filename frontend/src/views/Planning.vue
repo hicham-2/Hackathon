@@ -102,7 +102,7 @@ export default {
         selectable: true,
         editable: true,
         selectMirror: true,
-        weekends: false,
+        weekends: true,
         slotMinTime: '08:00:00',
         slotMaxTime: '20:00:00',
         headerToolbar: {
@@ -188,7 +188,7 @@ export default {
       }
 
       try {
-        const classId = 2;
+        const classId = 1;
 
         const response = await fetch(`http://localhost:8080/planning/generate`, {
           method: 'POST',

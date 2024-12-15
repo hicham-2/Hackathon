@@ -44,13 +44,17 @@ export class PlanningGenerator {
 
   getNextSchoolDay(currentDate) {
     let nextDate = new Date(currentDate);
+
+    // Assuming schoolDays is an array like ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday']
     do {
-      nextDate.setDate(nextDate.getDate() + 1);
+      nextDate.setDate(nextDate.getDate() + 1); // Move to the next day
     } while (
       !this.schoolDays.includes(
-        nextDate.toLocaleDateString("en-US", { weekday: "long" })
-      ) || nextDate.getDay() === 0 // Exclude Sunday
+        nextDate.toLocaleDateString("en-US", { weekday: "long" }) // Check if the day is a valid school day
+      ) ||
+      nextDate.getDay() === 0 // Exclude Sunday (getDay() === 0 for Sunday)
     );
+
     return nextDate;
   }
 
@@ -59,6 +63,10 @@ export class PlanningGenerator {
     try {
       // Start scheduling
       let currentDate = new Date(); // Start today
+      if (currentDate.getDay() === 0) {
+        currentDate = this.getNextSchoolDay(currentDate);
+      }
+
       currentDate.setHours(10, 0, 0, 0); // Start at 10:00 AM
 
       // Loop through each course
@@ -71,7 +79,6 @@ export class PlanningGenerator {
         );
 
         while (remainingHours > 0) {
-
           for (const session of this.schoolHours) {
             const sessionStart = new Date(currentDate);
             const [startHours, startMinutes] = session.start.split(":");
@@ -119,9 +126,7 @@ export class PlanningGenerator {
 
       return planning;
     } catch (error) {
-        console.log('Error generating school schedule', error);
-        
-      
+      console.log("Error generating school schedule", error);
     }
   }
 }

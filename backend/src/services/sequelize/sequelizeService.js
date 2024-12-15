@@ -46,7 +46,7 @@ export class SequelizeService {
 
     this.sectorService.model.hasMany(this.classeService.model, {
       foreignKey: "sector_id",
-      as: "sector",
+      as: "classe",
     });
 
     this.sectorService.model.hasMany(this.courseService.model, {
